@@ -73,7 +73,7 @@ https://nodejs.org/dist/v0.10.40/node-v0.10.40.pkg
 Mongo:
 Follow these Instructions:
 https://docs.mongodb.org/v3.0/tutorial/install-mongodb-on-os-x/
-~~~
+
 Add /mongodb/bin to full path
 ~~~shell
 sudo vim /etc/paths
