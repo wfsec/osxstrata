@@ -138,7 +138,7 @@ TO START APP:
 ~~~shell
 	cd bundle
 	env PORT=3000 PATH_TO_SCRIPTS=<path> MONGO_CONNECT=mongodb://localhost:3001/ ROOT_URL=http://localhost MONGO_URL=mongodb://localhost:3001/meteor node main.js
-
+~~~
 Other:
 ***
 
