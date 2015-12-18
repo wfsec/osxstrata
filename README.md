@@ -10,6 +10,7 @@ We are working on a thrid option a docker container. We hope to have that done i
 
 Pre Installation Checklist
 1. Xcode is needed if you plan to use git to clone the project code. <-OS X only obviously.
+
 2. pip (package manger) needs to be installed.
 ~~~shell
 sudo easy_install pip
