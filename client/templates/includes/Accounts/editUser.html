@@ -1,0 +1,22 @@
+<template name="editUser">
+<div class="row">
+<h2 class='center-align'>Edit Account</h2>
+    <form>
+        <div class="input-field col s12">
+          <input id="oldPassword" type="password" class="validate" name="oldPassword">
+          <label for="oldPassword" active >Old Password</label>
+        </div>
+        <div class="input-field col s12">
+        	<input  type="password" class="validate" name="acountPassword">
+        	<label for="accountPassword" active>New Password</label>
+        </div>
+        <div class="input-field col s12">
+            <input  type="password" class="validate" name="acountPassword1">
+            <label for="accountPassword1" active>Re-type New Password</label>
+        </div>
+        <button class="btn waves-effect waves-light right" type="submit" name="action">Update
+    		<i class="fa fa-user-plus right"></i>
+ 		</button>
+    </form>
+</div>
+</template>

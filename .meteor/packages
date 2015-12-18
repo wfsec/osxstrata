@@ -1,0 +1,41 @@
+# Meteor packages used by this project, one per line.
+# Check this file (and the other files in this directory) into your repository.
+#
+# 'meteor add' and 'meteor remove' will edit this file for you,
+# but you can also edit it by hand.
+
+iron:router
+fortawesome:fontawesome
+less
+http
+underscore
+d3js:d3
+tmeasday:publish-counts
+useraccounts:materialize
+accounts-password
+#accounts-ui
+standard-minifiers
+meteor-base
+mobile-experience
+mongo
+blaze-html-templates
+session
+jquery
+tracker
+logging
+reload
+random
+ejson
+spacebars
+check
+materialize:materialize
+matb33:bootstrap-collapse-js
+matb33:bootstrap-component-animations
+matb33:bootstrap-labels
+matb33:bootstrap-panels
+tomi:upload-server
+tomi:upload-jquery
+matb33:bootstrap-forms
+matb33:bootstrap-progress-bars
+lookback:seo
+rcy:nouislider

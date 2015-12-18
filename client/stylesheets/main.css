@@ -1,0 +1,531 @@
+/*#lion{
+  position: relative;
+  top: 10px;
+  right: -10px;
+}
+
+.nav-wrapper{
+  background: #34373D;
+}
+.navbar-nav li a.link:hover{
+  color:#ff7a00;
+  cursor:pointer;
+}
+
+.navbar-nav li a.link{
+font-size: .80em;
+padding-left:15px;
+padding-right: 0px;
+color:#999999;
+}
+
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:hover,
+.navbar-default .navbar-nav > .open > a:focus {
+  color: #ff7a00;
+  background-color:#34373D ;
+}
+
+/*.dropdown-menu {
+background-color: #34373D;
+top:49px;
+}
+.dropdown-menu > li > a.link:hover,
+.dropdown-menu > li > a.link:focus {
+  color: #ff7a00;
+  text-decoration: none;
+}
+#footer{
+
+  text-align: center;
+}*/
+
+
+.path-text{
+font-size: 0.75em;
+
+}
+.timeline{
+
+  height: 200px;
+}
+.display{
+  height:180px;
+  border: 1px dashed #90caf9 ;
+
+}
+.display .applesigned{
+  background-color: #69f0ae;
+
+
+}
+
+/* if I want to go to just materialize, this is for the label from bootstrap*/
+/*.label {
+    padding: 1px 3px 2px;
+    font-size: 9.75px;
+    font-weight: bold;
+    color: #ffffff;
+    text-transform: uppercase;
+    white-space: nowrap;
+    background-color: #bfbfbf;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}*/
+.label-default {
+background-color: #757575 ;
+
+}
+.label-danger {
+    float:right;
+    background-color: #ff1744 ;
+}
+.label-info {
+      float:right;
+
+    background-color: #2979ff;
+}
+.label-success {
+      float:right;
+
+    background-color: #00e676;
+}
+/* Section Labels */
+.label-kext{
+background-color: #880e4f;
+
+}
+.label-startup{
+background-color: #4a148c;
+
+}
+.label-applications{
+background-color: #311b92 ;
+
+}
+.label-quarantines{
+background-color: #ff6e40;
+
+}
+
+.label-chrome{
+background-color:#006064 ;
+
+}
+.label-firefox{
+background-color:#004d40 ;
+
+}
+.label-safari{
+background-color:#1b5e20 ;
+
+}
+.label-accounts{
+background-color: #e65100;
+
+}
+.label-mail{
+background-color: #bf360c;
+
+}
+
+/* labels for CHROME subsections and table_names*/
+
+.label-history {
+background-color: #795548;
+stroke:#795548;
+}
+.label-databases {
+background-color: #f06292;
+stroke: #f06292;
+}
+.label-web_data {
+background-color: #ba68c8;
+stroke:#ba68c8;
+}
+.label-login_data{
+background-color: #69f0ae;
+stroke:#69f0ae;
+}
+.label-cookies{
+  background-color: #7e57c2 ;
+  stroke:#7e57c2 ;
+}
+.label-archived_history{
+  background-color: #5c6bc0  ;
+  stroke:#5c6bc0;
+}
+
+.label-local_storage{
+  background-color: #42a5f5   ;
+  stroke:#42a5f5;
+}
+.label-top_sites{
+  background-color: #66bb6a   ;
+  stroke:#66bb6a;
+}
+.label-preferences{
+  background-color: #ffa726    ;
+  stroke:#ffa726;
+}
+.label-flagged{
+  background-color: #d50000    ;
+  stroke:#d50000;
+}
+.label-sqlite_sequence{background-color: #ffcdd2;stroke:#ffcdd2;  }
+.label-Databases{ background-color:#ef5350 ;stroke:#ef5350;  }
+.label-token_service{ background-color:#b71c1c ;stroke:#b71c1c;  }
+.label-autofill_profile_phones{ background-color:#ff1744 ;stroke:#ff1744;  }
+.label-ItemTable{ background-color: #f48fb1;stroke:#f48fb1; }
+.label-autofill_profile_emails{ background-color: #e91e63;stroke:#e91e63;  }
+.label-segment_usage{ background-color:#880e4f ;stroke:#880e4f; }
+.label-keywords{ background-color:#c51162 ;stroke:#c51162;  }
+.label-autofill_profile_names{ background-color:#ce93d8 ; stroke:#ce93d8; }
+.label-thumbnails{ background-color:#9c27b0  ;stroke:#9c27b0;  }
+.label-logins{ background-color:#aa00ff ;stroke:#aa00ff;  }
+.label-cookies{ background-color:#9575cd ;stroke:#9575cd;  }
+.label-autofill{ background-color:#311b92  ;stroke:#311b92 ;  }
+.label-autofill_profiles{ background-color:#448aff ; stroke:#448aff ; }
+.label-keyword_search_terms{ background-color: #03a9f4;stroke:#03a9f4; }
+.label-meta{ background-color: #00796b; stroke:#00796b; }
+.label-visit_source{ background-color:#9ccc65 ;stroke:#9ccc65 ;  }
+.label-visits{ background-color:#b9f6ca ;stroke:#b9f6ca; }
+.label-urls{ background-color: #ffc107;stroke:#ffc107; }
+.label-segments{ background-color: #e65100;stroke:#e65100;}
+.label-downloads_url_chains{ background-color:#ff9e80 ;stroke:#ff9e80; }
+
+
+/*firefox subsection labels*/
+.label-webapps_store{ background-color: #ffcdd2; }
+.label-health_report{ background-color:#ef5350 ; }
+.label-json_files{ background-color:#b71c1c  ;  }
+.label-addons{ background-color:#ff1744 ;  }
+.label-permissions{ background-color: #f48fb1;  }
+.label-signons{ background-color:#e91e63 ;  }
+.label-content_prefs{ background-color:#880e4f ;  }
+.label-extension{ background-color: #c51162;  }
+.label-null{background-color:#ce93d8  ;  }
+.label-history{ background-color:#9c27b0 ; }
+.label-formhistory{ background-color:#4a148c ; }
+.label-cookies{ background-color:#9575cd ; }
+/* firefox table_names */
+.label-webappsstore2{ background-color:#263238 ;  }
+.label-last_text{ background-color:#37474f  ;  }
+.label-last_numeric{ background-color:#455a64 ;  }
+.label-moz_historyvisits{ background-color:#546e7a ;  }
+.label-daily_last_text{ background-color:#607d8b ;  }
+.label-daily_discrete_numeric{ background-color:#78909c ;  }
+.label-daily_counters{ background-color:#90a4ae ;  }
+.label-measurements{ background-color:#b0bec5  ;  }
+.label-targetApplication{ background-color:#424242 ;  }
+.label-provider_state{ background-color: #616161;  }
+.label-groups{ background-color:#757575 ;  }
+.label-daily_discrete_text{ background-color: #9e9e9e ;  }
+.label-providers{ background-color:#bdbdbd ;  }
+.label-locale_strings{ background-color: #5d4037 ;  }
+.label-locale{ background-color:#6d4c41 ;  }
+.label-screenshot{ background-color:#795548  ; }
+.label-daily_last_numeric{ background-color: #8d6e63;  }
+.label-settings{ background-color:#a1887f  ;  }
+.label-developer{ background-color:#dd2c00 ;  }
+.label-compatibility_override{ background-color:#ff3d00 ;  }
+.label-moz_bookmarks{ background-color:#ff6e40  ;  }
+.label-fields{ background-color: #ff9e80 ;  }
+.label-moz_bookmarks_roots{ background-color:#bf360c  ;  }
+.label-sqlite_sequence{ background-color: #d84315 ;  }
+.label-moz_logins{ background-color:#ff5722  ;  }
+.label-types{ background-color:#ff8a65  ;  }
+.label-prefs{ background-color:#ff9100  ;  }
+.label-sqlite_stat1{ background-color:#ffd180 ;  }
+.label-addon{ background-color:#f57c00  ;  }
+.label-moz_annos{ background-color: #ffa726;  }
+.label-moz_favicons{ background-color:#ffcc80 ;  }
+.label-icon{ background-color:#ffc400 ;  }
+.label-moz_formhistory{ background-color:#ffe57f ;  }
+.label-moz_inputhistory{ background-color:#ff8f00  ;  }
+.label-moz_items_annos{ background-color:#ffc107  ;  }
+.label-moz_hosts{ background-color:#ffea00  ; }
+.label-moz_places{ background-color:#ffAf8A ;  }
+.label-moz_cookies{ background-color:#fbc02d  ;  }
+.label-null{ background-color:#aeea00 ; }
+.label-moz_anno_attributes{ background-color: #9e9d24; }
+
+/* safari subsection labels*/
+.label-localstorage{ background-color:#bf360c ;stroke:#bf360c;  }
+.label-history{ background-color: #9e9d24;stroke:#9e9d24; }
+/*safari table_name labels*/
+.label-Origins{ background-color: #546e7a;stroke:#546e7a; }
+.label-ItemTable{ background-color:#880e4f ;stroke:#880e4f;  }
+
+.label-md5{
+  background-color: #ba68c8 ;
+}
+.label-sha1{
+  background-color: #4db6ac;
+}
+.label-file-path{
+  background-color: #b9f6ca ;
+}
+.label-downloads{
+  background-color: #7e57c2 ;
+  stroke: #7e57c2;
+}
+
+.label-quarantines{
+  background-color: #e65100  ;
+}
+.label-signature-chains{
+  background-color: #6d4c41;
+}
+/* LABELS for accounts subsections */
+.label-recent_items{
+background-color: #795548;
+
+}
+.label-system_admins{
+background-color: #f06292;
+
+}
+.label-social_accounts{
+background-color: #ba68c8;
+
+}
+.label-system_users{
+background-color: #69f0ae;
+
+}
+/* accounts table_name labels*/
+.label-Z_4SYNCABLEDATACLASSES{ background-color: #ffcc80; }
+.label-Z_4SUPPORTEDDATACLASSES{ background-color:#795548 ;  }
+.label-Z_METADATA{ background-color: #9e9d24;  }
+.label-ZACCOUNTTYPE{ background-color:#f06292 ;  }
+.label-Z_1OWNINGACCOUNTTYPES{ background-color: #69f0ae;  }
+.label-ZDATACLASS{ background-color: #b9f6ca; }
+.label-ZACCESSOPTIONSKEY{ background-color:#8d6e63 ;  }
+.label-Z_PRIMARYKEY{ background-color: #b71c1c;  }
+
+/* startup subsections labels*/
+.label-scripting_additions{
+background-color: #69f0ae;
+stroke:#69f0ae;
+}
+.label-login_items{
+background-color: #f06292;
+stroke:#f06292;
+}
+.label-launch_agents{
+  background-color: #4db6ac;
+  stroke:#4db6ac;
+}
+
+/* applications subsections label*/
+.label-install_history{ background-color:#ff9100  ;  }
+.label-applications{ background-color: #9e9d24; }
+
+
+/*quarantines table_name labels*/
+
+.label-LSQuarantineEvent{
+  background-color:#37474f ;
+   stroke:#37474f ;
+}
+
+/*downloads subsection labels*/
+.label-old_email_downloads{ 
+  background-color: #ffcdd2;
+  stroke: #ffcdd2;  
+}
+.label-email_downloads{
+ background-color:#ef5350 ; 
+ stroke:#ef5350; }
+
+.danger{
+  fill:#d9534f;
+}
+.info{
+  fill:#31b0d5;
+}
+.success{
+  fill:#5cb85c;
+}
+/*.mypager .to-the-end > a,
+.mypager .to-the-end > span {
+  float: right;
+
+}
+.mypager .next > a,
+.mypager .next > span {
+  float: right;
+}
+
+
+
+.mypager .all-the-way > a,
+.mypager .all-the-way > span {
+  float: left;
+}
+.mypager .previous > a,
+.mypager .previous > span {
+  float: left;
+}
+
+.mypager .center-text > div {
+  font-size: 0.8em;
+}*/
+.datepicker .datepicker-dropdown .dropdown-menu .datepicker-orient-left .datepicker-orient-top {
+
+  background-color: white;
+}
+.right-align-label{
+  float:right;
+}
+.green{
+
+  color:green;
+}
+.red{
+  color:red;
+}
+.black{
+  color:black;
+}
+
+.check-all {
+  margin-top:0px;
+ 
+}
+
+
+/*Downloads timeline*/
+path { 
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+.btn-small{
+  font-size: 10px;
+  padding-top:8px;
+  padding-right:6px;
+  padding-bottom:6px;
+  padding-left:6px;
+}
+#sideNav{
+  margin-top: 0px;
+  margin-left: 0px;
+  height:584px;
+
+}
+.side-nav.fixed a{
+color:white;
+border:0px;
+text-decoration: none;
+font-size: 1em;
+}/*
+.collection a.collection-item .label{
+  margin-bottom:20px;
+  margin-top:20px;
+}*/
+.side-nav.fixed li{
+  padding:0px;
+  height:7.6%;
+}
+.side-nav.fixed li:hover {
+color:black;
+background-color: #29b6f6;
+border:0px;
+text-decoration: none;
+}
+.side-nav.fixed li.active {
+color:black;
+background-color: #29b6f6;
+border:0px;
+text-decoration: none;
+}
+.side-nav.fixed a:hover {
+color:black;
+background:none;
+border:0px;
+text-decoration: none;
+}
+
+body{
+  background-color: #e0e0e0;
+}
+
+.modal .modal-footer .btn{
+  margin:.8em;
+}
+
+.apple{
+  color:red;
+  font-color: red;
+}
+
+.icon{
+  color:white;
+  padding-right: 15px;
+}
+
+#chart{
+  background-color: #f5f5f5;
+}
+
+ main, footer {
+    padding-left: 240px;
+  }
+
+  @media only screen and (max-width : 992px) {
+     main, footer {
+      padding-left: 0;
+    }
+  }
+  .divider {
+    background-color: #fff;
+  }
+
+  .flag-label{
+    font-size: 2em;
+
+  }
+  .fa-check{
+    font-size:2em;
+    color:#00e676;;
+  }
+  .fa-times{
+    font-size: 2em;
+    color:#ff1744;
+  }
+  .fa-arrows-h{
+    color:#4a148c;
+  }
+  .alert-range{
+    font-size:1.5em;
+  }
+  #flagged{
+    background-color: #fff;
+    padding:15px;
+    /*margin:0px;*/
+    top-margin:-5px;
+  }
+  #flagged .alert-range{
+    font-size:1.2em;
+  }
+
+  .login {
+background-color: #fff;
+padding:15px;
+
+  }
+
+.fa-trash{
+  cursor:pointer;
+}

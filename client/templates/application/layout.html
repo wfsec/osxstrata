@@ -1,0 +1,205 @@
+<template name="layout">
+{{#if currentUser}}
+<header>
+
+    {{> header}}
+{{#if findID}}{{> sideNav}}{{/if}}
+</header> 
+
+
+<main>
+    
+    <!-- Modal Triggers -->
+    {{#if findID}}
+    <div class="row">
+    <div class="col s11">
+    <div class="row chart z-depth-3">
+			<div class='timeline col s12' style="display:none" id='chart'>
+			</div>
+	</div>
+		<div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+		    <a class="btn-floating btn-large indigo darken-4 waves-circle waves-effect waves-light  modal-trigger modal-close" href="#modal1"><i class='fa fa-filter'></i>
+			</a>
+  	
+		</div>
+		<div class="fixed-action-btn" style="bottom: 120px; right: 24px;">
+		    <a class="btn-floating btn-large blue waves-circle modal-trigger modal-close"  href="#modalAPI"><i class="fa fa-send"></i> </a>
+  	
+		</div>
+		<div class="fixed-action-btn" style="bottom: 195px; right: 24px;">
+		    <a class="btn-floating btn-large brown waves-circle" id='graph'><i class="fa fa-bar-chart"></i> </a>
+  	
+		</div>
+		<!-- ARCHVE/DELETE Button --> 
+		<!-- <div class="fixed-action-btn" style="bottom: 270px; right: 24px;">
+		    <a class="btn-floating btn-large red waves-circle modal-trigger modal-close"  href="#modal3"><i class="fa fa-trash"></i> </a>
+  	
+		</div> -->
+		</div>
+		</div>
+	{{/if}}	
+<!--    not quite yet {{> fixedButtons}}
+ -->	   
+ 			<div class='row'>
+ 			<div class='col s12'>
+            	{{> yield}}
+            </div>
+            </div>
+            
+
+ <img src='/indy_small.png' style="position:fixed; opacity:.5; z-index:-1;bottom: 0px; left: 280px;">
+</main>
+{{else}}
+<header>
+{{> header}}
+</header>
+	  {{> signin}} 
+	  <img src='/indy_small.png' style="position:fixed; opacity:.5; z-index:-1;bottom: 0px; left: 280px;">
+{{/if}}
+{{#if findID}}
+
+<div id="modalAPI" class="modal">
+	<div class="modal-content">
+		<div class="row">
+			<div class='col s12' >
+			<h3>Third Party Analysis <span class="thin" style="font-size:0.5em"> {{countChecked}} selected</span></h3>
+			
+  			<p></p>
+  			<div class="col s12">
+  			<div class="panel panel-default"> 
+			<div class="panel-heading" role="tab" id="heading1">
+	 			<div class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapse1" aria-expanded="true" aria-controls="collapse1">Items to Send</a>
+				</div>
+			</div>
+			<div id="collapse1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading1">
+				<div class="panel-body">
+					<ul class="collection with-header">
+			{{#each thirdParty}}
+			{{#if url}}
+				<li class="collection-item"><div>{{osxcollector_subsection}}, URL=>{{url}} </div></li>
+			{{/if}}
+			{{#if md5}}
+				<li class="collection-item"><div>{{osxcollector_subsection}}, MD5=>{{md5}} </div></li>
+			{{/if}}
+			{{#if referrer}}
+				<li class="collection-item"><div>{{osxcollector_subsection}}, REFERRER=>{{referrer}}</div></li>
+			{{/if}}
+			{{#if signon_realm}}
+				<li class="collection-item"><div>{{osxcollector_subsection}}, SIGNON_REALM=>{{signon_realm}}</div></li>
+
+			{{/if}}	
+			{{#if origin}}
+				<li class="collection-item"><div>{{osxcollector_subsection}}, ORIGIN=>{{origin}}</div></li>
+
+			{{/if}}	
+			{{#if host_key}}
+				<li class="collection-item"><div>{{osxcollector_subsection}}, host_key=>{{host_key}}</div></li>
+
+			{{/if}}	 
+			{{#if LSQuarantineDataURLString}}
+				<li class="collection-item"><div>{{osxcollector_subsection}}, URL=>{{LSQuarantineDataURLString}} </div></li>
+			{{/if}}
+			{{#if md5}}
+				<li class="collection-item"><div>{{osxcollector_subsection}}, MD5=>{{md5}} </div></li>
+			{{/if}}
+			{{#if DownloadEntryURL}}
+				<li class="collection-item"><div>{{osxcollector_subsection}}, URL=>{{DownloadEntryURL}} </div></li>
+			{{/if}}
+			{{#if redirectURLs}}
+				<li class="collection-item"><div>{{osxcollector_subsection}}, URL=>{{redirectURLs}} </div></li>
+			{{/if}}
+			{{#if origin}}
+				<li class="collection-item"><div>{{osxcollector_subsection}}, URL=>{{origin}}</div></li>
+			{{/if}}
+			{{#if ''}}
+				<li class="collection-item"><div>{{osxcollector_subsection}}, URL=>{{thirdParty}}</div></li>
+			{{/if}}	
+        	{{/each}}
+			</ul>
+				</div>
+			</div>
+		</div>
+		</div>
+			</div>	
+				 
+		</div>
+		<div class="modal-footer">
+		<div class="col s12 right-align">
+							<a class="waves-effect waves-light btn xforce"><i class="fa fa-send"></i> X-Force</a>
+							<a class="waves-effect waves-light btn virustotal"><i class="fa fa-send"></i> Virus Total</a>
+<!-- 							<a class="waves-effect waves-light btn "><i class="fa fa-send"></i> OpenDNS</a>
+ -->							<a class="waves-effect waves-light btn shadow"><i class="fa fa-send"></i> Shadow Server</a>
+							<a class="waves-effect waves-light btn blacklist"><i class="fa fa-send"></i> Blacklist</a>
+  			</div>    	</div>
+	</div>
+</div>
+
+
+
+
+<div id="modal3" class="modal">
+	<div class="modal-content">
+		<div class="row">
+			<div class='col s12' >
+			<h3>Archive<span class="thin" style="font-size:0.5em"> {{countChecked}} selected</span></h3>
+			
+			<div class="panel panel-default"> 
+			<div class="panel-heading" role="tab" id="heading2">
+	 			<div class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapse2" aria-expanded="true" aria-controls="collapse2">Items to Archive</a>
+				</div>
+			</div>
+			<div id="collapse2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2">
+				<div class="panel-body">
+					<ul class="collection with-header">
+			{{#each thirdParty}}
+			<li class="collection-item"><div>{{_id._str}} </div></li>
+					 
+        	{{/each}}
+			</ul>
+				</div>
+			</div>
+		</div>
+
+			</div>	
+				 
+		</div>
+		<div class="modal-footer">
+			<a class="waves-effect waves-red btn-large"><i class="fa fa-trash"></i> Archive</a>
+    	</div>
+	</div>
+</div>
+
+
+<div id="modal1" class="modal modal-filters">
+	<div class="modal-content">
+		<div class="row">
+			<div class='col s12' >
+
+			<h3> Subsections<!-- NEED a session variable to hold this data since I moved it to the layout template <span class="thin" style="font-size:0.5em"> {{getPublishedCount 'chrome-counter'}} returned</span> --></h3>
+			{{#each subsections}}
+				<div class="col s4 right-align">
+					<div class="switch">
+						<label class="label label-{{name}}" >{{name}}</label>
+						<label>
+						{{#if checkName name}}
+							<input class="switch" type="checkbox" name="{{name}}">
+						{{else}}
+							<input class="switch" type="checkbox" checked name="{{name}}">
+						{{/if}}
+							<span class="lever"></span>
+						</label>
+					</div>
+				</div>
+			{{/each}}
+
+			 <!--  next release :( <input type="date" class="datepicker" id="begDate">
+			  <input type="date" class="datepicker" id="endDate">
+ -->
+			</div>	 
+		</div>
+	</div>
+</div>
+{{/if}}
+</template>

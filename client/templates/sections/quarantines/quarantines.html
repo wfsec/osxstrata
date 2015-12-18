@@ -1,0 +1,144 @@
+<template name='sectionQuarantines'>
+{{#if currentUser}}
+<div class='row'>
+	<div class='col s11'>
+		
+				
+		<div class="row">
+		
+			<div class='col s12'>
+					<div class="col s2">
+						<input type="checkbox" id="check-all" />
+      					<label for="check-all" class="bold">{{countChecked}} selected</label>
+
+					</div>
+					
+				<div class="col s5 offset-s5">
+					<div class='col s12'>
+					<div class='col s1 offset-s4 all-the-way'>
+						<a href="#">
+							<i class='fa fa-step-backward'></i>
+						</a>
+					</div>
+					<div class='col s1 previous'>
+						<a href="#">
+							<i class='fa  fa-backward '></i>
+						</a>
+					</div>
+					<div class='col s4 center-text'>
+							{{curText}} of {{getPublishedCount 'quarantines-counter'}}
+					</div>
+					<div class='col s1 next {{#if showNext}}show{{else}}invisible{{/if}}'>
+						<a href="#">
+							<i class='fa  fa-forward '></i>
+						</a>
+					</div>
+					<div class='col s1 to-the-end {{#if showNext}}show{{else}}invisible{{/if}}'>
+						<a href="#">
+							<i class='fa  fa-step-forward'></i>
+						</a>
+					</div>
+
+					</div>
+				</div>
+			</div>
+			<div class="col s2  offset-s10 center-align">
+						<select class="browser-default" id="amount-to-show">
+					      <option value="" disabled selected>Results per Page</option>
+							<option>25</option>
+							<option>50</option>
+							<option>75</option>
+							<option>100</option>
+							<option>500</option>
+						</select>
+
+			</div>
+		</div>
+		{{#each quarantines}}
+		<div class="panel panel-default"> <!--{{checkResults shadow_results}}">-->
+			<div class="panel-heading z-depth-3" role="tab" id="heading{{_id._str}}">
+	 			<div class="panel-title">
+					<input class="coll" type="checkbox" id="{{_id._str}}" />
+					<label for="{{_id._str}}" style="top:5px"></label>
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapse{{_id._str}}" aria-expanded="true" aria-controls="collapse{{_id._str}}">
+					{{#if LSQuarantineOriginTitle}}{{findname LSQuarantineOriginTitle}}{{else}}
+						{{#if LSQuarantineEventIdentifier}}{{LSQuarantineEventIdentifier}}{{else}}
+									{{_id._str}}
+						{{/if}}
+					{{/if}}
+					<span class="label label-{{osxcollector_subsection}}">{{osxcollector_subsection}}</span>
+					<span class="label label-{{osxcollector_table_name}}">{{osxcollector_table_name}}</span> 
+			 		<i class="fa fa-exclamation-triangle" style="color:{{scoreCheck black_list vt_results ibm_domain_results ibm_md5_results shadow_server}}" ></i>
+					</a>
+					<i class="fa fa-{{#if flagged}}flag{{else}}flag-o{{/if}}" style="float:right;margin-right:10px;"></i>
+					{{#if shadow_results}}
+					<label class="label {{checkResultsLabels shadow_results}} share" style="float:right;margin-right:10px;">Shadow Server</label>
+					{{/if}}
+					{{#if ibm_domain_results}}
+					<label class="label {{checkResultsLabelsIBM ibm_domain_results}} " style="float:right;margin-right:10px;">X-Force Domain</label>
+					{{/if}}
+					{{#if vt_results}}
+	         		<label class="label {{checkResultsLabelsIBM vt_results}} " style="float:right;margin-right:10px;">Virus Total</label>
+	         		{{/if}}
+  		    	    {{#if ibm_md5_results}}
+  		    	    <label class="label {{checkResultsLabelsIBM ibm_md5_results}} " style="float:right;margin-right:10px;">X-Force MD5</label>
+  		    	    {{/if}}
+  		    	    {{#if black_list}}
+  		    	    <label class="label {{checkResultsLabels black_list}} " style="float:right;margin-right:10px;">Blacklist</label>
+  		    	    {{/if}}
+
+				</div>
+			</div>
+			<div id="collapse{{_id._str}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading{{_id._str}}">
+				<div class="panel-body z-depth-3">
+					<ul class="collection with-header">
+		{{#each iter}}
+					 <li class="collection-item"><div><span class="label label-default text-uppercase">{{key}}</span><span>  {{value}}</span></div></li>
+        {{/each}}
+<!-- 		{{> quarantinesDisplay}}
+ -->			</ul>
+				</div>
+			</div>
+		</div>
+ 		{{/each}}
+		<div class="row">
+			<div class='col s12'>
+					<div class="col s2">
+						<span class="fa fa-{{#if checkAll}}check-square-o{{else}}square-o{{/if}} fa-2x check-all" id="check-all"></span><span class="thin"> {{countChecked}} selected</span>
+
+					</div>
+					
+				<div class="col s5 offset-s5">
+					<div class='col s12'>
+					<div class='col s1 offset-s4 all-the-way'>
+						<a href="#">
+							<i class='fa fa-step-backward'></i>
+						</a>
+					</div>
+					<div class='col s1 previous'>
+						<a href="#">
+							<i class='fa  fa-backward '></i>
+						</a>
+					</div>
+					<div class='col s4 center-text'>
+							{{curText}} of {{getPublishedCount 'quarantines-counter'}}
+					</div>
+					<div class='col s1 next {{#if showNext}}show{{else}}invisible{{/if}}'>
+						<a href="#">
+							<i class='fa  fa-forward '></i>
+						</a>
+					</div>
+					<div class='col s1 to-the-end {{#if showNext}}show{{else}}invisible{{/if}}'>
+						<a href="#">
+							<i class='fa  fa-step-forward'></i>
+						</a>
+					</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{{/if}}
+</template>

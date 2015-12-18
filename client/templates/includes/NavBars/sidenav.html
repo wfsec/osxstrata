@@ -1,0 +1,157 @@
+<template name='sideNav'>
+{{#if currentUser}}
+	{{waitOn}}
+	
+	 
+
+ <ul id="slide-out" class="side-nav fixed grey darken-3">
+ <li class="center-align">
+ 	<img src='/hat.svg' height='80' width="80">
+ </li>
+ 	<li class="bold{{active 'Project'}} ">
+ 		<a href="/project/{{projectId}}" class="collection-item{{active 'Project'}}waves-effect waves-red sideNav" id="Project">
+ 	    <div class="valign-wrapper"> 
+   			<i class="fa fa-desktop icon" ></i>
+			{{project}}
+ 			<span class="label label-info right-align-label" >{{commas count}}</span>
+		</div>	
+		</a>	 
+ 	</li>
+    <li class="bold{{active 'Accounts'}} ">
+   		<a href="/project/{{projectId}}/accounts" class="waves-effect waves-red sideNav" id="Accounts">
+   		<div class="valign-wrapper"> 
+   		   	<i class="fa fa-group icon"></i>
+			<span class="icon">Accounts</span>
+		   	<span class="label label-info valign right-align">{{commas (getPublishedCount 'accounts-total-count')}}</span>
+			<span class="label label-danger valign right-align" style="margin-left:5px">{{commas (getPublishedCount 'accounts-flagged-count')}}
+		    	<i class="fa fa-flag "></i>
+		    </span>
+    	</div>
+    	</a>
+	</li>
+	<li class="bold{{active 'Applications'}} ">
+   		<a href="/project/{{projectId}}/applications" class="waves-effect waves-red sideNav" id="Applications">
+   		<div class="valign-wrapper">
+   		   	<i class="fa fa-apple icon"></i>
+		    <span class="icon">Applications</span>
+		   	<span class="label label-info valign right-align">{{commas (getPublishedCount 'applications-total-count')}}</span>
+			<span class="label label-danger valign right-align" style="margin-left:5px">{{commas (getPublishedCount 'applications-flagged-count')}}
+		    	<i class="fa fa-flag "></i>
+		    </span>
+    	</div>
+    	</a>
+	</li>
+	<li class="bold{{active 'Chrome'}} sideNav">
+		<a href="/project/{{projectId}}/chrome" class="waves-effect waves-red " id="Chrome">
+   		<div class="valign-wrapper"> 
+   			<i class="fa fa-chrome icon"></i>
+		    <span class="icon">Chrome</span>
+		   	<span class="label label-info valign right-align"> {{commas (getPublishedCount 'chrome-total-count')}}</span>
+			<span class="label label-danger valign right-align" style="margin-left:5px">{{commas (getPublishedCount 'chrome-flagged-count')}}
+		    	<i class="fa fa-flag "></i>
+		    </span>
+    	</div>
+    	</a>
+	</li>
+	<li class="bold{{active 'Downloads'}} ">
+		<a href="/project/{{projectId}}/downloads" class="waves-effect waves-red sideNav" id="Downloads">
+   		<div class="valign-wrapper"> 
+   		    <i class="fa fa-download icon"></i>
+		    <span class="icon">Downloads</span>
+		   	<span class="label label-info valign right-align">{{commas (getPublishedCount 'downloads-total-count')}}</span>
+			<span class="label label-danger valign right-align" style="margin-left:5px">{{commas (getPublishedCount 'downloads-flagged-count')}}
+		    	<i class="fa fa-flag "></i>
+		    </span>
+    	</div>
+    	</a>
+	</li>
+	<li class="bold{{active 'Firefox'}} ">
+		<a href="/project/{{projectId}}/firefox" class="waves-effect waves-red sideNav" id="Firefox">
+   		<div class="valign-wrapper">
+   		    <i class="fa fa-firefox icon"></i>
+ 			<span class="icon">Firefox</span>
+		   	<span class="label label-info valign right-align">{{commas (getPublishedCount 'firefox-total-count')}}</span>
+			<span class="label label-danger valign right-align" style="margin-left:5px">{{commas (getPublishedCount 'firefox-flagged-count')}}
+		    	<i class="fa fa-flag "></i>
+		    </span>
+    	</div>
+    	</a>
+	</li>
+	<li class="bold{{active 'Kernal Ext'}} ">
+	   	<a href="/project/{{projectId}}/kext" class="waves-effect waves-red sideNav" id="Kernal">
+		<div class="valign-wrapper"> 
+   			<i class="fa fa-code icon"></i>
+		    <span class="icon">Kernal Ext</span>
+		   	<span class="label label-info valign right-align">{{commas (getPublishedCount 'kext-total-count')}}</span>
+			<span class="label label-danger valign right-align" style="margin-left:5px">{{commas (getPublishedCount 'kext-flagged-count')}}
+		    	<i class="fa fa-flag "></i>
+		    </span>
+    	</div>
+    	</a>
+	</li>
+	<li class="bold{{active 'Mail'}} ">
+   		<a href="/project/{{projectId}}/mail" class="waves-effect waves-red sideNav" id="Mail">
+		<div class="valign-wrapper"> 
+   		   	<i class="fa fa-envelope icon"></i>
+		    <span class="icon">Mail</span>
+		   	<span class="label label-info valign right-align">{{commas (getPublishedCount 'mail-total-count')}}</span>
+			<span class="label label-danger valign right-align" style="margin-left:5px">{{commas (getPublishedCount 'mail-flagged-count')}}
+		    	<i class="fa fa-flag "></i>
+		    </span>
+    	</div>
+    	</a>
+	</li>
+	<li class="bold{{active 'Quarantines'}} ">
+   		<a href="/project/{{projectId}}/quarantines" class="waves-effect waves-red sideNav" id="Quarantines">
+		<div class="valign-wrapper"> 
+   		   	<i class="fa fa-warning icon"></i>
+		    <span class="icon">Quarantines</span>
+		   	<span class="label label-info valign right-align">{{commas (getPublishedCount 'quarantines-total-count')}}</span>
+			<span class="label label-danger valign right-align" style="margin-left:5px">{{commas (getPublishedCount 'quarantines-flagged-count')}}
+		    	<i class="fa fa-flag "></i>
+		    </span>
+    	</div>
+    	</a>
+	</li>
+	<li class="bold{{active 'Safari'}} ">
+   		<a href="/project/{{projectId}}/safari" class="waves-effect waves-red sideNav" id="Safari">
+   		<div class="valign-wrapper"> 
+   		   	<i class="fa fa-safari icon left-align"></i>
+			<span class="icon">Safari</span>
+		  	<span class="label label-info valign right-align">{{commas (getPublishedCount 'safari-total-count')}}</span>
+			<span class="label label-danger valign right-align" style="margin-left:5px">{{commas (getPublishedCount 'safari-flagged-count')}}
+		    	<i class="fa fa-flag "></i>
+		    </span>
+    	</div>
+    	  </a>
+	</li>
+	<li class="bold{{active 'Startup'}} ">
+   		<a href="/project/{{projectId}}/startup" class="waves-effect waves-red sideNav" id="Startup">
+   		<div class="valign-wrapper">
+   		   	<i class="fa fa-cogs icon"></i>
+		    <span class="icon">Startup</span>
+		   	<span class="label label-info valign right-align">{{commas (getPublishedCount 'startup-total-count')}}</span>
+			<span class="label label-danger valign right-align" style="margin-left:5px">{{commas (getPublishedCount 'startup-flagged-count')}}
+		    	<i class="fa fa-flag "></i>
+		    </span>
+    	</div>
+    	</a>
+	</li>
+	<li class="bold{{active 'Flagged'}} ">
+		<a href="/project/{{projectId}}/flagged" class="waves-effect waves-red sideNav" id="Flagged">
+		<div class="valign-wrapper"> 
+			<i class="fa fa-flag icon"></i>
+		    <span class="icon">Flagged</span>
+		   	<span class="label label-danger valign right-align">{{commas flaggedCount}}
+		    	<i class="fa fa-flag "></i>
+		    </span>
+    	</div>
+    	</a>
+
+	</li>
+  </ul>
+        
+        
+			
+{{/if}}
+</template>

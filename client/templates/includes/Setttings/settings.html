@@ -1,0 +1,299 @@
+<template name="settings">
+{{waitOn}}
+<div class="row">
+<div class="col s10">
+<h1>Settings </h1>
+<div class="divider"></div>
+<div class='col s10 offset-s1'>
+
+  <div class="valign-wrapper" style="display:inline-block;width:100%">
+      <div class="valign" style="display:inline-block;float:left"> 
+        <span class="valign flag-label" >Flagging Levels</span>
+      </div>
+      <div class="switch master right">
+      <label>
+        Off
+        <input type="checkbox" id="flaggSwitch" {{check}}>
+        <span class="lever"></span>
+        On
+      </label>
+    </div>
+    </div> 
+      
+<!--   <div class="divider"></div>
+ -->   
+   
+    <div id="flagged" class="z-depth-3" style="display:{{display}}">
+<!--     <ul class="collection z-depth-3">
+ -->      {{#each settings}}
+<!--       <li class="collection-item">
+ -->        
+ <div style="height:100px">
+ <div class="valign-wrapper" style="display:inline-block;width:100%">
+         <div class="valign" style="display:inline-block;float:left"> 
+            <span class="valign flag-label" >{{label}}</span>
+         </div>
+          <div class="valign switch" style="display:inline-block;float:right">
+            <label>
+              Off
+              {{#if onView}}
+              <input type="checkbox" class="OnOrOff" id="flagSwitch" checked>
+              {{else}}
+              <input type="checkbox" class="OnOrOff" id="flagSwitch" >
+              {{/if}}
+              <span class="valign lever"></span>
+              On
+            </label>
+          </div>
+        </div> 
+        <div style="display:{{displayFlag onView}}">
+          <div id="slider{{_id}}" class="sliders">
+        </div>
+        <br>
+        <div class="alert-range" >
+          <span class="label label-info" style="float:left">Current Range: 
+          <span>{{min}}</span>
+           <i class="fa fa-arrows-h"></i>
+           <span> {{max}} </span></span>
+           
+           <span class="label label-success" style="float:right">Changed Range: 
+            <span>{{findmin _id}}</span>
+           <i class="fa fa-arrows-h"></i>
+           <span> {{findmax _id}}</span></span>
+        </div>
+
+        </div>
+</div>        
+<!--         </li>
+ -->      {{/each}}
+<!--       </ul>
+ -->
+<div class="valign switch" style="display:inline-block;float:right">
+         
+      </div>
+
+ </div>
+ <a class="waves-effect waves-light btn right" id="submit-flag-changes" ><i class="fa fa-flag"></i> Submit Changes</a>
+ </div>
+<!-- API KEY SETTINGS SECTION -->
+
+  <div class="col s10 offset-s1">
+    <div class="valign-wrapper" style="display:inline-block;width:100%">
+      <div class="valign" style="display:inline-block;float:left"> 
+        <span class="valign flag-label" >API Keys</span>
+      </div>
+      <!-- <div class="valign switch" style="display:inline-block;float:right">
+         
+      </div> -->
+    </div> 
+    <ul class="collection z-depth-3">
+
+    {{#each api_settings}}
+      <li class="collection-item"> 
+      <div>
+      <span class="title">{{edit type}}</span>
+      <a class="waves-effect waves-light btn right secondary-content edit-api-settings" id="{{type}}" ><i class="fa  fa-pencil"></i></a>
+      <p>
+        {{#if value}}
+          {{shadow value type}}
+        {{else}}
+           Empty
+        {{/if}}
+      </p>
+     </div> </li>
+    {{/each}}
+    </ul>
+</div>
+
+<!--- ACCOUNTS SECTION -->
+
+  <div class="col s10 offset-s1">
+    <div class="valign-wrapper" style="display:inline-block;width:100%">
+      <div class="valign" style="display:inline-block;float:left"> 
+        <span class="valign flag-label" >Accounts</span>
+      </div>
+      <div class="valign switch" style="display:inline-block;float:right">
+        <a class="waves-effect waves-light btn right" id="add-account" ><i class="fa fa-user-plus"></i> Add</a>
+      </div>
+    </div>
+
+<!--     <div class="divider"></div>
+ -->    <ul class="collection z-depth-3">
+
+    {{#each users}}
+      <li class="collection-item"><div>
+      <a class="waves-effect waves-light btn right secondary-content"><i class="fa fa-trash-o" id="{{id}}"></i></a>
+      <a id="edit_user" class="waves-effect waves-light btn right secondary-content {{loggedInUser account}}" style="margin-right:5px"><i class="fa fa-pencil"></i></a>
+      <p>{{account}} Created Date: {{createdAt}} </p></div></li>
+    {{/each}}
+
+    </ul>
+  </div>
+<!-- scripts settings -->
+  <!-- <div class="col s10 offset-s1">
+    <div class="valign-wrapper" style="display:inline-block;width:100%">
+      <div class="valign" style="display:inline-block;float:left"> 
+        <span class="valign flag-label" >Path to Scripts</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <ul class="collection z-depth-3">
+
+    
+      <li class="collection-item"><div><span>{{path}}</span><a id="path_to_scripts_modal_open" class="waves-effect waves-light btn right secondary-content"><i class="fa fa-pencil"></i></a></div></li>
+    
+
+    </ul>
+  </div> -->
+
+<div class="col s10 offset-s1">
+    <div class="valign-wrapper" style="display:inline-block;width:100%">
+      <div class="valign" style="display:inline-block;float:left"> 
+        <span class="valign flag-label" >Database Updates</span>
+      </div>
+    </div>
+
+<!--     <div class="divider"></div>
+ -->    <ul class="collection z-depth-3">
+
+    
+      <li class="collection-item"><div><span>Update Domain BlackList Collection</span><a class="waves-effect waves-light btn right secondary-content"><i class="fa fa-level-up"></i></a></div></li>
+    
+
+    </ul>
+  </div>
+
+
+</div>
+  </div>
+
+<!-- MODAL SECTION --> 
+<div id="modalAlert" class="modal modal-filters">
+  <div class="modal-content">
+    <h1>Flagging Levels</h1>
+    <div class="divider"></div>
+    You are about to make these changes:
+    {{#each settingsChanges}}
+<div class="valign-wrapper" style="display:inline-block;width:100%">
+  <div class="valign" style="display:inline-block;">
+    <i class="fa fa-{{onCheck on}}"></i> 
+  </div>
+  <div class="valign" style="display:inline-block;">
+    <span class="valign flag-label" >{{label}}</span>
+  </div> 
+  {{#if on}}
+  <div class="alert-range" style="display:inline-block;"> 
+    <span class="label label-success" style="float:left">RANGE: 
+    <span>{{min}}</span>
+    <i class="fa fa-arrows-h"></i>
+    <span> {{max}} </span></span> 
+    
+  </div>
+  {{/if}}
+</div>
+
+    {{/each}}
+  <p>
+    <input class="with-gap" name="group3" type="radio" id="applyNew" checked />
+    <label for="applyNew">Only apply to new imports</label>
+  </p>
+  <p>
+    <input class="with-gap" name="group3" type="radio" id="applyAllButMod"  />
+    <label for="applyAllButMod">Apply to new imports and currently flagged items not modified by users</label>
+  </p>
+  <p>
+    <input class="with-gap" name="group3" type="radio" id="applyAll"  />
+    <label for="applyAll">Apply to all items in app. (will remove all flags currently set and flag based on these settings) </label>
+  </p>
+  <div class="divider"></div>
+
+  <div class="modal-footer">
+      <a class=" modal-action modal-close waves-effect waves-green btn" id='changeSettings'>Submit</a>
+      <a class=" modal-action modal-close waves-effect waves-red btn" id="cancelChange">Cancel</a>
+
+    </div>
+</div>
+</div>
+
+<div id="modalSettings" class="modal">
+  <div class="modal-content">
+    <h1>API Settings EDIT</h1>
+<!--     {{> quickForm collection='API_Settings' doc=this id='apikeys' type="update" }}
+ -->
+ <form class="s12">
+ <div class="row">
+ {{#each edit_api_setting}}
+ <div class="input-field col s12">
+          <input id="{{type}}" type="text" class="validate api-key-setting" value={{shadow value type}}>
+          <label class="active" for="{{type}}">{{type}}</label>
+</div>
+
+ {{/each}}
+
+ <div class="modal-footer">
+      <a class=" modal-action modal-close waves-effect waves-green btn" id='changeSettingsAPIKEYS'>Submit</a>
+      <a class=" modal-action modal-close waves-effect waves-red btn" id="cancelChange">Cancel</a>
+
+    </div>
+</div>
+</form>
+ </div>
+</div>
+<!-- path to scripts modal --> 
+<!-- <div id="modalPath" class="modal">
+  <div class="modal-content">
+    <h1>Full Path to Python Scripts</h1>
+
+ <form class="s12">
+ <div class="row">
+ 
+ <div class="input-field col s12">
+          <input id="path_to_scripts" type="text" class="validate api-key-setting" value={{path}}>
+          <label class="active" for="path_to_scripts">FULL PATH</label>
+</div>
+
+ 
+
+ <div class="modal-footer">
+      <a class=" modal-action modal-close waves-effect waves-green btn" id='changeSettingsPATH'>Submit</a>
+      <a class=" modal-action modal-close waves-effect waves-red btn" id="cancelChange">Cancel</a>
+
+    </div>
+</div>
+</form>
+ </div>
+</div> -->
+<!-- DELETE ACCOUNT CONFIRMATION MODAL -->
+<div id="modalDelete" class="modal">
+  <div class="modal-content">
+  {{#each deleteUser}}
+    <h2 class='center-align'>Are you sure you want to delete {{username}}?</h2>
+  {{/each}}
+
+ <form class="s12">
+ <div class="modal-footer">
+      <a class="modal-action modal-close waves-effect waves-green btn" id='deleteTheUser'>Delete</a>
+      <a class="modal-action modal-close waves-effect waves-red btn" id="cancelChange">Cancel</a>
+
+</div>
+</form>
+ </div>
+</div>
+
+
+<!-- ADD ACCOUNT MODAL -->
+<div id="modalAdd" class="modal">
+  <div class="modal-content">
+  {{> createAccount}}
+ </div>
+</div>
+
+<!-- EDIT ACCOUNT MODAL -->
+<div id="modalEditUser" class="modal">
+  <div class="modal-content">
+  {{> editUser}}
+ </div>
+</div>
+
+</template>

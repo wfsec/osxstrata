@@ -1,0 +1,28 @@
+<template name="customUpload">
+{{#if currentUser}}
+ <form method="POST" enctype="multipart/form-data">
+ 	<div class="file-field input-field">
+      <div class="btn">
+      <span>Choose File</span>
+        <input type="file" class="jqUploadclass" data-form-data='{{ submitData }}'>
+        </div>
+        </div>
+         <p>
+    		<input class="with-gap" name="group3" type="radio" id="noanly" checked />
+    		<label for="noanly">No Analysis</label>
+    		<input class="with-gap" name="group3" type="radio" id="anly"  />
+    		<label for="anly">Analysis - may take some time</label>
+  		</p>
+  		<!-- <div class="modal-footer">
+		<div class="col s12 "> -->
+        {{#with infoLabel}}
+            {{ infoLabel}} 
+             <a class="start waves-effect waves-light btn modal-action modal-close">Start Upload</a>
+        {{/with}}
+		<!-- </div>
+		</div> -->
+    </form>
+
+<!--     {{> upload_bootstrap fileTypes='.json' multiple=true formData=specificFormData}}
+ -->{{/if}}
+</template>

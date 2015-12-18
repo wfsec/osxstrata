@@ -1,0 +1,19 @@
+<template name='project'>
+{{#if currentUser}}
+{{waitOn}}
+<div class='row'>
+	<div class='col s11'>
+		<div class="page-header">
+  			<h1>Project Name: <small>{{projectId}}</small></h1>
+		</div>
+  			{{#each system_info}}
+  				{{#each iter}}
+			<h5>
+				<span class="label label-default">{{key}}</span> {{value}}
+			</h5>	
+				{{/each}}
+			{{/each}}	
+	</div>	
+	</div>
+	{{/if}}
+</template>

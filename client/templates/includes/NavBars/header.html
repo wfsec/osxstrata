@@ -1,0 +1,31 @@
+<template name='header'>
+<nav class='top-nav grey darken-3'>
+<!-- <div class="container">
+ -->    <div class="nav-wrapper">
+      <a href="#" data-activates="slide-out" class="button-collapse hide-on-large-only"><i class="mdi-navigation-menu"></i></a>
+
+      <a href="/" class="brand-logo center" style="font-size: 2em" id='home'>  OSX STRATA</a>
+      <ul class="right">
+      {{#if currentUser}}
+          <li><a class="modal-trigger modal-close"><i class="fa fa-upload"></i></a></li>
+          <li><a href="/settings"><i class="fa fa-th-large"></i></a></li>
+          <li>{{username}}</li>
+          <li><a title="Log Out" class="signout"><i class="fa fa-sign-out"></i></a></li>
+      {{/if}}
+        
+      </ul>
+    </div>
+<!--     </div>
+ -->  </nav>
+  <!-- <div class="container">
+     <a href="#" data-activates="nav-mobile" class="button-collapse top-nav full hide-on-large"><i class="mdi-navigation-menu"></i></a>
+
+  </div> -->
+  <div id="modalUpload" class="modal modal-filters">
+  <div class="modal-content">
+    <div class="row">
+      {{> customUpload}}
+    </div>
+  </div>
+</div>
+  </template>
