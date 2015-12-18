@@ -119,6 +119,7 @@ tar -xvf node-v0.10.40-linux-x64.tar.gz
 cd node-v0.10.40-linux-x64/lib/node_modules/npm/
 ./configure
 make install
+~~~
 
 Follow instructions here:
 https://docs.mongodb.org/v3.0/tutorial/install-mongodb-on-red-hat/
