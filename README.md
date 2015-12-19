@@ -1,14 +1,14 @@
 # osxstrata
-OS X Strata builds upon Yelps OSXCollector, providing a user interface to analyze data collected from a potentially compromised system.
+OS X Strata builds upon Yelps OSXCollector(http://yelp.github.io/osxcollector/), providing a user interface to analyze data collected from a potentially compromised system.
 
 Currently there are two ways that you can run OSXStrata. 
 
 1. Run from the git directory. - Quick and easy.
 2. Run as an application.
 
-This probably goes without saying but this app should only be used internally.
-
 We are working on a thrid option a docker container. We hope to have that done in the next couple of weeks. 
+
+This probably goes without saying but this app should only be used internally.
 
 Pre Installation Checklist
 1. Xcode is needed if you plan to use git to clone the project code. <-OS X only obviously.
