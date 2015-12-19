@@ -1,7 +1,10 @@
 <template name="customUpload">
 {{#if currentUser}}
+<h2> Upload OSX Collector JSON File</h2>
+  <div class="divider"></div>
  <form method="POST" enctype="multipart/form-data">
  	<div class="file-field input-field">
+
       <div class="btn">
       <span>Choose File</span>
         <input type="file" class="jqUploadclass" data-form-data='{{ submitData }}'>

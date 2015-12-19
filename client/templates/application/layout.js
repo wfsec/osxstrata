@@ -310,6 +310,10 @@ Template.layout.events({
 				
 		 	}
 		 $('#modalAPI').closeModal();
+		 var overlays = document.getElementsByClassName("lean-overlay");
+    for (i = 0; i < overlays.length; i++) {
+      overlays[i].style.display = 'none';
+    }
 
 	},
 'click .shadow' : function (evt,tmp) {
@@ -323,6 +327,10 @@ Template.layout.events({
 							}
 		}
 		$('#modalAPI').closeModal();
+		var overlays = document.getElementsByClassName("lean-overlay");
+    for (i = 0; i < overlays.length; i++) {
+      overlays[i].style.display = 'none';
+    }
 	},
 'click .blacklist' : function(evt,tmpl){
 		checked = Project.find({'_id':{'$in': convertIdsToObjectID(Session.get('ids'))}}).fetch()
@@ -409,6 +417,10 @@ Template.layout.events({
 
 		 }
 		$('#modalAPI').closeModal();
+		var overlays = document.getElementsByClassName("lean-overlay");
+    for (i = 0; i < overlays.length; i++) {
+      overlays[i].style.display = 'none';
+    }
 	},
 'click #graph': function (evt, tmpl){
 			var predata = Project.find({'_id':{'$in': convertIdsToObjectID(Session.get('ids'))}}).fetch()
@@ -454,6 +466,10 @@ Template.layout.events({
 		 }
 
 		 $('#modalAPI').closeModal();
+		 var overlays = document.getElementsByClassName("lean-overlay");
+    for (i = 0; i < overlays.length; i++) {
+      overlays[i].style.display = 'none';
+    }
 	},
 'click .switch' : function(evt,tmpl){
 		//uncheck all checkboxes after filter has been clicked

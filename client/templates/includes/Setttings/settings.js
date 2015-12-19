@@ -153,6 +153,10 @@ Template.settings.rendered = function () {
       },
     'click #cancelChange' : function(ev, tmpl){
       $('.modal').closeModal();
+      var overlays = document.getElementsByClassName("lean-overlay");
+    for (i = 0; i < overlays.length; i++) {
+      overlays[i].style.display = 'none';
+    }
     },
     'click #changeSettings': function(ev, tmpl){
     cursor  = Settings.find({flag_setting:{$exists:true}}).fetch()
@@ -176,6 +180,10 @@ Template.settings.rendered = function () {
     },
     'click #changeSettingsAPIKEYS': function (ev, tmpl){
       $('#modalSettings').closeModal();
+      var overlays = document.getElementsByClassName("lean-overlay");
+    for (i = 0; i < overlays.length; i++) {
+      overlays[i].style.display = 'none';
+    }
       var doc = document.getElementsByClassName('api-key-setting')
       for (var i = 0; i < doc.length; i++) {
         Meteor.call('apiKeyUpdate',doc[i].id, doc[i].value)

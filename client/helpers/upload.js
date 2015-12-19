@@ -11,7 +11,11 @@ Template.customUpload.rendered = function () {
 Template.customUpload.events({
   'click .start': function (e) {
     Uploader.startUpload.call(Template.instance(), e);
-    $('.modal').closeModal()
+    $('#modalUpload').closeModal()
+    var overlays = document.getElementsByClassName("lean-overlay");
+    for (i = 0; i < overlays.length; i++) {
+      overlays[i].style.display = 'none';
+    }
   }
   
 });
@@ -39,7 +43,7 @@ Template.customUpload.helpers({
 
 Meteor.startup(function() {
   Uploader.finished = function(index, fileInfo, templateContext) {
-    $('#modal4').closeModal()
+    $('#modalUpload').closeModal()
     if(document.getElementById('anly').checked){
   Meteor.call('importJson','.uploads/tmp' + fileInfo.path, true, function (error, result) { 
    if(!error){
