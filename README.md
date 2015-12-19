@@ -6,6 +6,8 @@ Currently there are two ways that you can run OSXStrata.
 1. Run from the git directory. - Quick and easy.
 2. Run as an application.
 
+This probably goes without saying but this app should only be used internally.
+
 We are working on a thrid option a docker container. We hope to have that done in the next couple of weeks. 
 
 Pre Installation Checklist
@@ -150,3 +152,41 @@ https://www.ibm.com/account/profile/us?page=reg
 
 Sign up for Public VirusTotal API 
 https://www.virustotal.com/
+
+****
+USAGE:
+
+OSXCollector json file can be imported from the UI or CLI. 
+
+~~~~shell
+export MONGO_CONNECT=mongodb://localhost:3001/ PATH_TO_SCRIPTS=/full/path/osxstrata/scripts/
+
+python scripts/strata -h 
+
+-a  	 Import Json File and Run Analysis
+ 		 -a <Path to File>
+
+-n  	 Import Json File
+ 	 	 -n <Path to File>
+
+-r  	 Remove all imported data from Project Collection
+-ri 	 Remove a specific incident from Project Collection
+  		 -ri <osxcollector_incident_id>
+
+--virusTotal  	 Send either hash or domain/url to VirusTotal API
+  		 --virusTotal --hash <md5>
+ 		 --virusTotal <domain/url>
+
+--ibmXforce  	 Send either hash or domain/url to IBM Xforce API
+  		 --ibmXforce --hash <md5>
+ 		 --ibmXforce <domain/url>
+
+-h This Help Menu
+
+~~~~
+Example
+
+~~~shell
+python scripts/strata.py -a doom.json
+
+~~~~
