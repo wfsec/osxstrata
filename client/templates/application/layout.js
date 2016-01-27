@@ -3,6 +3,21 @@ findID: function (){
 	return !!Session.get('projectID')
 
 },
+data: function (){
+	return Session.get('file_info')
+},
+found: function (){
+	return Session.get('found')
+},
+details: function (){
+	return Session.get('scan_details')
+},
+score: function (){
+	return Session.get('score')
+},
+whichToShow: function (whichThirdParty){
+	return whichThirdParty == Session.get('thirdparty')
+},
 thirdParty : function () {
 				return Project.find({'_id':{'$in': convertIdsToObjectID(Session.get('ids'))}})
 	},
@@ -104,6 +119,41 @@ thirdParty : function () {
 		}else{
 			return true
 		}
+	},
+	shorten: function(link){
+
+		return link.substring(0, 35) + '...'
+	},
+	iterShadow: function() {
+	  var list = []
+	  var index = 0
+	  var doc = Session.get('scan_details')
+	 _(doc).each( function( value, key, doc) {
+	        list[index] = {};
+	        list[index]['value'] = value;
+	        list[index]['key'] = key;
+	    		
+	        index++;
+	    });
+	    return list;
+
+	},
+	iterXforceURL: function(ob) {
+	  var list = []
+	  var index = 0
+	  var doc = ob
+	 _(doc).each( function( value, key, doc) {
+	 	
+	 		
+
+	        list[index] = {};
+	        list[index]['value'] = value;
+	        list[index]['key'] = key;
+	    		
+	        index++;
+	    });
+	    return list;
+
 	}
 })
 
@@ -471,6 +521,24 @@ Template.layout.events({
       overlays[i].style.display = 'none';
     }
 	},
+	'click .metascan': function(evt,tmpl) {
+		 checked = Project.find({'_id':{'$in': convertIdsToObjectID(Session.get('ids'))},'md5':{"$exists":true}}).fetch()
+		 Materialize.toast(checked.length + ' hashes being sent to Metascan', 3000)
+		 for (var i = 0; i < checked.length; i++) {
+		 	if('md5' in checked[i]){
+		 			Materialize.toast(checked[i]['md5'] + ' sent to Metascan', 2500)
+		 			Meteor.call('metascan','md5', checked[i]['md5'],function(err, data){
+		 				Materialize.toast( data, 3000)}
+		 				)
+		 		}
+		 }
+
+		 $('#modalAPI').closeModal();
+		 var overlays = document.getElementsByClassName("lean-overlay");
+    for (i = 0; i < overlays.length; i++) {
+      overlays[i].style.display = 'none';
+    }
+	},
 'click .switch' : function(evt,tmpl){
 		//uncheck all checkboxes after filter has been clicked
 		checkboxes = document.getElementsByClassName('coll') 
@@ -508,7 +576,101 @@ Template.layout.events({
   'click .fa-filter' : function (ev, tmpl){
   	  	 $('#modal1').openModal();
 
-  }
+  },
+	'click .third-party-results' :function(evt, tmpl){
+		oid = new Meteor.Collection.ObjectID(evt.target.id.split('_')[0].trim());
+		one = Project.findOne(oid)
+		Session.set('thirdparty',evt.target.id.split('_')[1].trim() )
+		if (evt.target.id.split('_')[1].trim() == 'metascan'){
+			if (one['mt_results'] <= 0){
+				Session.set('found',0)
+				Session.set('file_info',{'md5': one['md5']})
+				Session.set('scan_details', 'Not Found')
+			}else{
+				Session.set('found',1)
+				Session.set('file_info',one['mt_data']['file_info'] )
+				console.log(one)
+				scan = []
+				for (var key in one['mt_data']['scan_details']){
+					if (one['mt_data']['scan_details'].hasOwnProperty(key))
+					{
+						 one['mt_data']['scan_details'][key]['scanner'] = key
+						 one['mt_data']['scan_details'][key]['def_time'] = one['mt_data']['scan_details'][key]['def_time'].split('T')[0]
+						 scan.push(one['mt_data']['scan_details'][key])
+					}
+				}
+				scan.sort(function(a, b){
+					return b.scan_result_i - a.scan_result_i
+				})
+				Session.set('score',one['mt_results'] + '/' + scan.length)
+				Session.set('scan_details',scan)
+			}
+
+
+		
+		}else if(evt.target.id.split('_')[1].trim() == 'virustotal'){
+				Session.set('found',1)
+				Session.set('file_info',{'md5':one['vt_data']['resource'], 'link':one['vt_data']['permalink'], 'scan_date':one['vt_data']['scan_date'] })
+				scan = []
+				for (var key in one['vt_data']['scans']){
+					if (one['vt_data']['scans'].hasOwnProperty(key))
+					{
+						 one['vt_data']['scans'][key]['scanner'] = key
+						 scan.push(one['vt_data']['scans'][key])
+					}
+				}
+				scan.sort(function(a, b){
+					return b.detected - a.detected
+				})
+				Session.set('score',one['vt_data']['positives'] + '/' + one['vt_data']['total'])
+				Session.set('scan_details',scan)
+			
+
+		}else if (evt.target.id.split('_')[1].trim()  == 'xforceMD5'){
+				Session.set('found',1)
+				family = ''
+				if (one['ibm_malware_family']){
+					for (var i = 0; i < one['ibm_malware_family'].length; i++) {
+						if (i == one['ibm_malware_family'].length -1){
+						family = family + one['ibm_malware_family'][i]
+
+						}else{
+						family = family + one['ibm_malware_family'][i] + ','
+						}
+					};
+				}
+				Session.set('file_info',{'md5':one['md5'], 'score':one['ibm_md5_results'], 'family':family, 'risk':one['ibm_risk']})
+				Session.set('score',one['ibm_md5_results'])
+				Session.set('scan_details',0)
+			
+
+		}else if (evt.target.id.split('_')[1].trim()  == 'xforceUrl'){
+				Session.set('found',1)
+				Session.set('file_info',{'url':one['ibm_domain_data']['result']['url']})
+				Session.set('score',one['ibm_domain_results'])
+				Session.set('scan_details',one['ibm_domain_data']['result'])
+			
+
+		}else if (evt.target.id.split('_')[1].trim()  == 'shadow'){
+				Session.set('found',1)
+				Session.set('file_info',{'md5':one['md5'], 'link': one['shadow_url']})
+				Session.set('scan_details', one['shadow_data'])
+				Session.set('score',one['shadow_results'])
+				
+
+		}else if (evt.target.id.split('_')[1].trim()  == 'blacklist'){
+				Session.set('found',1)
+				Session.set('file_info',{'url':one['BlackList_Domain'], 'source': one['Black_List_Source']})
+				Session.set('scan_details', 0)
+				Session.set('score',one['black_list'])
+				
+
+		}
+		$('#thirdPartyModal').openModal();
+	},
+	'click .close': function(evt, tmpl){
+		$('#thirdPartyModal').closeModal();
+	}
 	
 
 
@@ -684,7 +846,7 @@ for (var i = 0; i < predata.length; i++) {
         }
         if(d.ibm_domain_results){
         	
-        	tempscore += d.ibm_domain_results[0].score
+        	tempscore += d.ibm_domain_results
         }
         if (d.shadow_results)
         {
@@ -803,4 +965,20 @@ for (var i = 0; i < predata.length; i++) {
     $('.tooltipped').tooltip({delay: 50});
   });
 
+}
+
+function interate(ob) {
+	  var list = []
+	  var index = 0
+	  var doc = ob
+	 _(doc).each( function( value, key, doc) {
+	 	
+	        list[index] = {};
+	        list[index]['value'] = value;
+	        list[index]['key'] = key;
+	    		
+	        index++;
+	    });
+	 console.log(list)
+	    return list;
 }

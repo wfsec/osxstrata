@@ -40,11 +40,10 @@ Template.sectionQuarantines.helpers({
 		} 
 		else if (rslts == 1){
 			return 'label-warning'
-		}else if (rslts >1){
+		}else if (rslts == 2){
 			return 'label-danger'
 		}else
 		{ return 'label-default'}
-	
 	},
 	checkResultsLabelsShadow : function (rslts) {
 		if (rslts == -1){
@@ -84,17 +83,27 @@ Template.sectionQuarantines.helpers({
 	  var index = 0
 	  var doc = this
 	 _(doc).each( function( value, key, doc) {
-	 	if(key == 'ibm_domain_results'){
-	 		newval=''
-	 			for (var i = 0; i < value.length; i++) {
-	 				newval += "{ DOMAIN: " + value[i]['domain'] + " RATING: " + value[i]['score'] + ' DESCRIPTION: ' + value[i]['ibm_descriptions'] + ' ASSOCIATED URL: ' + value[i]['associated_url'] + '} '
-	 			};
-
-	 		list[index] = {};
-	        list[index]['value'] = newval;
-	        list[index]['key'] = key;
-	    }
-	    	else if(key != '_id' && key != 'osxcollector_incident_id' && key != 'flagged'){
+	 	if(key != '_id' && 
+	 			key != 'osxcollector_incident_id' && 
+	 			key != 'flagged' && 
+	 			key != 'osxcollector_section' &&
+	 			key != 'BlackList_Domain' && 
+	 			key != 'Black_List_Source' &&
+	 			key != 'black_list' &&
+	 			key != 'ibm_domain_results' &&
+	 			key != 'ibm_domain_data' &&
+	 			key != 'ibm_malware_family' &&
+	 			key != 'ibm_md5_results' &&
+	 			key != 'ibm_risk' &&
+	 			key != 'shadow_url' &&
+	 			key != 'shadow_data' &&
+	 			key != 'shadow_results' &&
+	 			key != 'vt_results' &&
+	 			key != 'vt_data' &&
+	 			key != 'mt_data' &&
+	 			key != 'mt_results' &&
+	 			key != 'vt_scan_date' 
+	 			){
 	        list[index] = {};
 	        list[index]['value'] = value;
 	        list[index]['key'] = key;
@@ -123,13 +132,16 @@ Template.sectionQuarantines.helpers({
 		if(bl === undefined){
 			bl = 0
 		}
-		score = sh + vt + ibm_md5 + ibm_domain[0].score + bl
+		score = sh + vt + ibm_md5 + ibm_domain + bl
 		if (score > 0)
 			{return '#ef5350'}
 		else
 			{return '#66bb6a'}
 
 	
+	},
+	countChecked: function (){
+		return Session.get('checked')
 	}
 
 })

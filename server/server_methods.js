@@ -25,7 +25,7 @@ Meteor.methods({
 
   },
   updateSettings: function(id,min,max,onView){
-    console.log(Settings.update(id,{$set:{min:min, max:max, on:onView}}) + "Settings Updated")
+    console.log(Settings.update(id,{$set:{min:min, max:max, on:onView}}) + " Setting Updated")
 
   },
   removeFlags: function(flagBy){
@@ -116,6 +116,42 @@ Meteor.methods({
     sleep(15000)
 
   },
+  metascan: function (apiTYPE, data) {
+    if (!PATH){
+      return 'ERROR NOT SENT: NO PATH TO SCRIPTS IN SETTINGS'
+    }
+    // console.log(apiTYPE,data)
+    if(apiTYPE == 'md5'){
+      exist = Hashes.findOne({"md5":data,"mt_results":{"$exists":true},"mt_data":{"$exists":true}})
+      if (!exist){
+      cmd  = 'python ' + PATH + 'strata.py --metascan --hash ' + data
+      
+      exec(cmd, function (error, stdout, stderr) {
+      console.log(error, stdout, stderr)
+          })
+      console.log(cmd)
+
+      sleep(2400)
+      }else{
+
+        Project.update({'md5': data},{$set: {'mt_results': exist['mt_results'],'mt_data': exist['mt_data']}},{multi: true})
+      console.log('Already in the DB')
+      }
+    }else{
+    cmd  = 'python ' + PATH + 'strata.py --metascan --url ' + data  
+    
+    exec(cmd, function (error, stdout, stderr) {
+      console.log(error, stdout, stderr)
+          })
+      console.log(cmd)
+
+    sleep(2400)
+    }
+    // console.log(cmd)
+    
+    
+
+  },
   xforce: function (apiTYPE, data,id) {
     // console.log(apiTYPE,data)
     if (!PATH){
@@ -147,6 +183,16 @@ Meteor.methods({
     
 
   },
+  updateHashes: function (){
+    if (!PATH){
+      return 'ERROR NOT SENT: NO PATH TO SCRIPTS IN SETTINGS'
+    }
+  cmd  = 'python ' + PATH + 'strata.py --update'
+  exec(cmd, function (error, stdout, stderr) {
+      console.log(error, stdout, stderr)
+          })
+  console.log(cmd)
+  },
   shadowServerCheck: function (p_id, id, md5) {
     var cursor = Hashes.findOne({'md5': md5,'shadow_results':{'$exists':true}})
 
@@ -158,17 +204,17 @@ Meteor.methods({
             if(result.content.length > 34) {
               console.log('\033[32m ITS THERE\033[0m')
               Hashes.insert({'shadow_results': -1, 'md5':md5})
-              Project.update({'md5': md5},{$set: {'shadow_results': -1,'shadow_url': urlmd5}},{multi: true})
+              Project.update({'md5': md5},{$set: {'shadow_results': -1,'shadow_url': urlmd5, 'shadow_data': 'None'}},{multi: true})
             }else{
-              Hashes.insert({'shadow_results': 1, 'md5':md5})
-              Project.update({'md5': md5},{$set: {'shadow_results': 1,'shadow_url': urlmd5}},{multi: true})
+              Hashes.insert({'shadow_results': 1, 'md5':md5, 'shadow_data': result.substr(result.indexOf('{'), result.indexOf('}') )})
+              Project.update({'md5': md5},{$set: {'shadow_results': 1,'shadow_url': urlmd5, 'shadow_data': result.substr(result.indexOf('{'), result.indexOf('}') )}},{multi: true})
 
             }
           } catch (e) {
             console.log('Something went wrong')
           }
   }else{
-  console.log(Project.update({'md5': md5},{$set: {'shadow_results': cursor['shadow_results'] ,'shadow_url': urlmd5}},{multi: true}))
+  console.log(Project.update({'md5': md5},{$set: {'shadow_results': cursor['shadow_results'] ,'shadow_url': urlmd5, 'shadow_data':cursor['shadow_data']}},{multi: true}))
   
     }
 },

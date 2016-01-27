@@ -1,4 +1,5 @@
 Meteor.startup( function () {
+  SyncedCron.start();
 if(Meteor.users.find().count()==0){
   Accounts.createUser({
     username: 'deleteMe',
@@ -61,6 +62,9 @@ if ( Settings.find({'type':'Virus_Total_api_key'}).count() == 0 ){
   Settings.insert({'type':'Virus_Total_api_key','value':'','api_key_setting':true})
 }
 
+if ( Settings.find({'type':'Metascan_api_key'}).count() == 0 ){
+  Settings.insert({'type':'Metascan_api_key','value':'','api_key_setting':true})
+}
 //haven't finished how to incorporate different liscense types for VirusTotal. We are still using the public API though. 
 // if ( Settings.find({'type':'Virus_Total_request_limit'}).count() == 0 ){
 //   Settings.insert({'type':'Virus_Total_request_limit','value':'','api_key_setting':true})
@@ -88,14 +92,20 @@ if ( Settings.find({'label':"Blacklist"}).count() == 0 ){
   Settings.insert({"label" : "Blacklist", "min" : 2, "max" : 2, "flag_setting" : true, "onView" : true, "on" : true, "absmax" : 2, "absmin" : -1, "apiType" : "black_list"})
 }
 if ( Settings.find({'label':"VirusTotal"}).count() == 0 ){
-  Settings.insert({"label" : "VirusTotal", "min" : 2, "max" : 100, "flag_setting" : true, "on" : true, "onView" : true, "absmax" : 100, "absmin" : 0, "apiType" : "vt_results"})
+  Settings.insert({"label" : "VirusTotal", "min" : 2, "max" : 100, "flag_setting" : true, "on" : true, "onView" : true, "absmax" : 56, "absmin" : 0, "apiType" : "vt_results"})
 }
-
+if ( Settings.find({'label':"Metascan"}).count() == 0 ){
+  Settings.insert({"label" : "Metascan", "min" : 0, "max" : 42, "flag_setting" : true, "on" : true, "onView" : true, "absmax" : 42, "absmin" : 0, "apiType" : "mt_results"})
+}
 if ( Settings.find({'label':"IBM X-Force MD5"}).count() == 0 ){
   Settings.insert({"label" : "IBM X-Force MD5", "min" : 1, "max" : 100, "flag_setting" : true, "on" : true, "onView" : true, "absmax" : 100, "absmin" : 0, "apiType" : "ibm_md5_results"})
 }
 if (Settings.find({'flagging':{'$exists':true}}).count() == 0){
   Settings.insert({'flagging' :true, 'api_setting': true})
+}
+
+if (Settings.find({'cronBlacklist':{'$exists':true}}).count() == 0){
+  Settings.insert({'cronBlacklist' :true, 'date_string': 'at 11:00 pm on Saturday'})
 }
 console.log("\033[32m[+]SETTINGS CREATED \033[0m")
 

@@ -70,24 +70,24 @@
 			 
 					</a>
 					<i class="fa fa-{{#if flagged}}flag{{else}}flag-o{{/if}}" style="float:right;margin-right:10px;"></i>
-					{{#if shadow_reults}}
-					<label class="label {{checkResultsLabels shadow_results}} share" style="float:right;margin-right:10px;">Shadow Server</label>
+					{{#if shadow_results}}
+					<label class="label third-party-results {{checkResultsLabelsShadow shadow_results}} share" id='{{_id._str}}_shadow'  style="float:right;margin-right:10px;">{{shadow_results}} Shadow Server</label>
 					{{/if}}
 					{{#if ibm_domain_results}}
-					<label class="label {{checkResultsLabelsIBM ibm_domain_results}} " style="float:right;margin-right:10px;">X-Force Domain</label>
+					<label class="label third-party-results {{checkResultsLabelsIBM ibm_domain_results}} " id='{{_id._str}}_xforceUrl' style="float:right;margin-right:10px;">{{ibm_domain_results}} X-Force Domain</label>
 					{{/if}}
 					{{#if vt_results}}
-	         		<label class="label {{checkResultsLabelsIBM vt_results}} " style="float:right;margin-right:10px;">Virus Total</label>
+	         		<label class="label third-party-results {{checkResultsLabelsIBM vt_results}} " id='{{_id._str}}_virustotal'  style="float:right;margin-right:10px;"> {{vt_results}} Virus Total</label>
 	         		{{/if}}
   		    	    {{#if ibm_md5_results}}
-  		    	    <label class="label {{checkResultsLabelsIBM ibm_md5_results}} " style="float:right;margin-right:10px;">X-Force MD5</label>
+  		    	    <label class="label third-party-results {{checkResultsLabelsIBM ibm_md5_results}} " id='{{_id._str}}_xforceMD5' style="float:right;margin-right:10px;">{{ibm_md5_results}} X-Force MD5 </label>
   		    	    {{/if}}
   		    	    {{#if black_list}}
-  		    	    <label class="label {{checkResultsLabels black_list}} " style="float:right;margin-right:10px;">Blacklist</label>
-   		    	    {{/if}}
-  		    	    {{#if flaggedBy}}
-  		    	    <i class="fa fa-user right tooltipped" title="Flagged By:{{flaggedBy}}" style="padding-right:5px"></i>
+  		    	    <label class="label third-party-results {{checkResultsLabels black_list}} " id='{{_id._str}}_blacklist' style="float:right;margin-right:10px;">{{black_list}} Blacklist</label>
   		    	    {{/if}}
+  		    	    {{#if mt_results}}
+	         		<label class="label third-party-results {{checkResultsLabelsIBM mt_results}} " id='{{_id._str}}_metascan' style="float:right;margin-right:10px;">{{mt_results}} MetaScan </label>
+	         		{{/if}}
 				</div>
 			</div>
 			<div id="collapse{{_id._str}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading{{_id._str}}">

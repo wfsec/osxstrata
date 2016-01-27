@@ -48,7 +48,27 @@ Template.sectionAccounts.helpers({
 	  var index = 0
 	  var doc = this
 	 _(doc).each( function( value, key, doc) {
-	    	if(key != '_id' && key != 'osxcollector_incident_id' && key != 'flagged' && key != 'checked'){
+	    	if(key != '_id' && 
+	 			key != 'osxcollector_incident_id' && 
+	 			key != 'flagged' && 
+	 			key != 'osxcollector_section' &&
+	 			key != 'BlackList_Domain' && 
+	 			key != 'Black_List_Source' &&
+	 			key != 'black_list' &&
+	 			key != 'ibm_domain_results' &&
+	 			key != 'ibm_domain_data' &&
+	 			key != 'ibm_malware_family' &&
+	 			key != 'ibm_md5_results' &&
+	 			key != 'ibm_risk' &&
+	 			key != 'shadow_url' &&
+	 			key != 'shadow_data' &&
+	 			key != 'shadow_results' &&
+	 			key != 'vt_results' &&
+	 			key != 'vt_data' &&
+	 			key != 'mt_data' &&
+	 			key != 'mt_results' &&
+	 			key != 'vt_scan_date' 
+	 			){
 	        list[index] = {};
 	        list[index]['value'] = value;
 	        list[index]['key'] = key;
@@ -57,6 +77,9 @@ Template.sectionAccounts.helpers({
 	    });
 	    return list;
 
+	},
+	countChecked: function (){
+		return Session.get('checked')
 	}
 	
 

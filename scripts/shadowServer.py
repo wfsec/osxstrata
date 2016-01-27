@@ -15,8 +15,8 @@ def getShadow(md5):
 		return [0,url]
 	# print s
 	# print len(s)
-	if len(s)>34:
-		return [-1,url]
+	if len(s)>34: 
+		return [-1, url, json.loads(s[s.index('{'):s.index('}')+1])]
 	else:
-		return [1,url]
+		return [1, url, None]
 

@@ -11,6 +11,7 @@ import requests, urllib2
 import simplejson as json
 import xforceMod,shadowServer
 import virustotal as vt
+import metascan as mt
 import threading
 from bson.objectid import ObjectId
 
@@ -357,15 +358,15 @@ def shadow(collection,coll,id):
 		if hashes:
 			if "shadow_results" not in hashes.keys():
 				rslts = shadowServer.getShadow(i['md5'])
-				DB.project.update({"_id": i["_id"]},{"$set":{"shadow_results": rslts[0],"shadow_url": rslts[1]}})
-				DB.hashes.update(q,{"$set":{"shadow_results":rslts[0]}})
+				DB.project.update({"_id": i["_id"]},{"$set":{"shadow_results": rslts[0],"shadow_url": rslts[1], 'shadow_data': rslts[2]}})
+				DB.hashes.update(q,{"$set":{"shadow_results":rslts[0], 'shadow_data':rslts[2]}})
 			else:
 				url = "http://bin-test.shadowserver.org/api?md5=%s" % i['md5']
-				DB.project.update({"_id": i["_id"]},{"$set":{"shadow_results": hashes["shadow_results"],"shadow_url": url}})
+				DB.project.update({"_id": i["_id"]},{"$set":{"shadow_results": hashes["shadow_results"],"shadow_url": url, "shadow_data": hashes['shadow_data']}})
 		else:
 			rslts = shadowServer.getShadow(i['md5'])
-			DB.project.update({"_id": i["_id"]},{"$set":{"shadow_results": rslts[0],"shadow_url": rslts[1]}})
-			DB.hashes.update({'md5':i['md5']}, {'$set':{'md5':i['md5'],"shadow_results":rslts[0]}},upsert=True)
+			DB.project.update({"_id": i["_id"]},{"$set":{"shadow_results": rslts[0],"shadow_url": rslts[1], "shadow_data": rslts[2]}})
+			DB.hashes.update({'md5':i['md5']}, {'$set':{'md5':i['md5'],"shadow_results":rslts[0], "shadow_data": rslts[2]}},upsert=True)
 		p+=1
 	
 	print "\033[36mShadow ==> Collection: %s done\033[0m" % (collection)		
@@ -386,8 +387,8 @@ def hashCheck(collection,coll,id):
 				if malware:
 					if "ibm_rating" in malware.keys():
 						old += 1
-						DB.project.update({"_id":i['_id']},{"$set":{"ibm_md5_results":malware['ibm_rating'], "Malware_Family":malware['ibm_family']}})
-						CHECKEDHASH[i['md5']] = [malware['ibm_rating'],malware['ibm_family']]
+						DB.project.update({"_id":i['_id']},{"$set":{"ibm_md5_results":malware['ibm_rating'], "ibm_malware_family":malware['ibm_family'], "ibm_risk" : malware['ibm_risk']}})
+						CHECKEDHASH[i['md5']] = [malware['ibm_rating'],malware['ibm_family'], malware['ibm_risk']]
 					else:
 						old += 1
 						rslts = xforceMod.xfe_malware_check(token,i['md5'])
@@ -396,14 +397,14 @@ def hashCheck(collection,coll,id):
 							family = rslts['malware']['origins']['external']['family']
 							if rating == 0:
 								rating = -1
-							DB.hashes.update({'md5':i['md5']},{"$set":{'ibm_rating':rating, "ibm_family": family}})
-							DB.project.update({"_id":i['_id']},{"$set":{"ibm_md5_results":rating, "IBM_Malware_Family":family}})
-							CHECKEDHASH[i['md5']] = [rating,family]
+							DB.hashes.update({'md5':i['md5']},{"$set":{'ibm_rating':rating, "ibm_family": family, "ibm_risk": rslts['malware']['risk']}})
+							DB.project.update({"_id":i['_id']},{"$set":{"ibm_md5_results":rating, "ibm_malware_family":family, "ibm_risk": rslts['malware']['risk']}})
+							CHECKEDHASH[i['md5']] = [rating, family, rslts['malware']['risk']]
 						else:
 							#print str(p),rslts
-							DB.project.update({"_id":i['_id']},{"$set":{"ibm_md5_results":-1}})
-							DB.hashes.update({'md5':i['md5']},{"$set":{'ibm_rating': -1, "ibm_family":'None'}})
-							CHECKEDHASH[i['md5']] = [-1,'None']
+							DB.project.update({"_id":i['_id']},{"$set":{"ibm_md5_results":-1, "ibm_family":'None', "ibm_risk": 'None'}})
+							DB.hashes.update({'md5':i['md5']},{"$set":{'ibm_rating': -1, "ibm_family":'None', "ibm_risk": 'None'}})
+							CHECKEDHASH[i['md5']] = [-1, 'None', 'None']
 
 				else:
 					rslts = xforceMod.xfe_malware_check(token,i['md5'])
@@ -414,18 +415,18 @@ def hashCheck(collection,coll,id):
 						family = rslts['malware']['origins']['external']['family']
 						if rating == 0:
 							rating = -1
-						DB.hashes.update({'md5':i['md5']},{'$set':{'md5':i['md5'],'ibm_rating':rating, "ibm_family": family}},upsert=True)
-						DB.project.update({"_id":i['_id']},{"$set":{"ibm_md5_results":rating, "IBM_Malware_Family":family}})
-						CHECKEDHASH[i['md5']] = [rating,family]
+						DB.hashes.update({'md5':i['md5']},{'$set':{'md5':i['md5'],'ibm_rating':rating, "ibm_family": family, "ibm_risk": rslts['malware']['risk']}},upsert=True)
+						DB.project.update({"_id":i['_id']},{"$set":{"ibm_md5_results":rating, "ibm_malware_family":family, "ibm_risk": rslts['malware']['risk']}})
+						CHECKEDHASH[i['md5']] = [rating, family, rslts['malware']['risk']]
 					else:
 						#print "Returned ERROR"
-						DB.project.update({"_id":i['_id']},{"$set":{"ibm_md5_results":-1}})
-						DB.hashes.update({'md5':i['md5']},{'$set':{'md5':i['md5'],'ibm_rating': -1, "ibm_family":'None'}},upsert=True)
-						CHECKEDHASH[i['md5']] = [-1,'None']
+						DB.project.update({"_id":i['_id']},{"$set":{"ibm_md5_results":-1, "ibm_family":'None', "ibm_risk": 'None'}})
+						DB.hashes.update({'md5':i['md5']},{'$set':{'md5':i['md5'],'ibm_rating': -1, "ibm_family":'None', "ibm_risk": 'None'}},upsert=True)
+						CHECKEDHASH[i['md5']] = [-1, 'None', 'None']
 
 			else:
 				old += 1
-				DB.project.update({"_id":i['_id']},{"$set":{"ibm_md5_results":CHECKEDHASH[i['md5']][0], "Malware_Family":CHECKEDHASH[i['md5']][1]}})
+				DB.project.update({"_id":i['_id']},{"$set":{"ibm_md5_results":CHECKEDHASH[i['md5']][0], "ibm_malware_family":CHECKEDHASH[i['md5']][1], "ibm_risk": CHECKEDHASH[i['md5']][2]}})
 
 		except RuntimeError, e:
 			print "\033[31m SOME ERROR::=> %s \n %s \033[0m" % (e,i)
@@ -483,7 +484,7 @@ def blackListCheck(coll,collection,doc,id):
 						DB.project.update({"_id":i['_id']},{"$set":{"black_list":1,"Black_List_Source":rslts['source'],"BlackList_Domain":rslts['data']}})
 						CHECKED[domain] = [1,rslts['source'],rslts['data']]
 					else:
-						DB.project.update({"_id":i['_id']},{"$set":{"black_list":1,"Black_List_Source":None,"BlackList_Domain":None}})
+						DB.project.update({"_id":i['_id']},{"$set":{"black_list":-1,"Black_List_Source":None,"BlackList_Domain":None}})
 						CHECKED[domain] = [-1,None,None]
 			else:
 				DB.project.update({"_id":i['_id']},{"$set":{"black_list":CHECKED[domain][0],"Black_List_Source":CHECKED[domain][1],"BlackList_Domain":CHECKED[domain][2]}})
@@ -493,34 +494,22 @@ def blackListCheck(coll,collection,doc,id):
 				q = {"data":domain,'source':'IBMXFORCE'}
 				domainLookup = DB.domains.find_one(q)
 				if domainLookup:
-					
-					DB.project.update({"_id":i['_id']},{'$push':{"ibm_domain_results":{'$each':[{'domain':domain,"score":domainLookup['score'], 'associated_url':domainLookup['associated_url'],"ibm_descriptions":domainLookup['category']}]}}})
-					IBMCHECKED[domain] = [domainLookup['score'],domainLookup['associated_url'],domainLookup['category']]
+					DB.project.update({"_id":i['_id']},{"$set": {"ibm_domain_results":domainLookup['ibm_domain_results'], 'ibm_domain_data':domainLookup['ibm_domain_data']}})
+					IBMCHECKED[domain] = [domainLookup['ibm_domain_results'],domainLookup['ibm_domain_data']]
 				else:
 					ibm = xforceMod.xfe_url_check(token,domain.strip())
 					if 'error' not in ibm.keys():
 							score = float(ibm['result']['score'])
-							catDesc = ''
-							for key,values in ibm['result']['categoryDescriptions'].iteritems():
-								catDesc += key + " ==> " + ibm['result']['categoryDescriptions'][key]
-							if 'associated' in ibm.keys():
-								if float(ibm['associated'][0]['score']) > score:
-									score = float(ibm['associated'][0]['score'])
-								DB.project.update({"_id":i['_id']},{'$push':{"ibm_domain_results":{'$each':[{'domain':domain,"score":score, 'associated_url':ibm['associated'][0]['url'],"ibm_descriptions":catDesc}]}}})
-								IBMCHECKED[domain] = [score,ibm['associated'][0]['url'],catDesc]
-								DB.domains.insert({"data":domain,"source":"IBMXFORCE","score":score,'associated_url': ibm['associated'][0]['url'],"category":catDesc,"lastDate":datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')})
-							else:
-								DB.project.update({"_id":i['_id']},{'$push':{"ibm_domain_results":{'$each':[{'domain':domain,"score":score, 'associated_url':None,"ibm_descriptions":catDesc}]}}})
-								IBMCHECKED[domain] = [score,None,catDesc]
-								DB.domains.insert({"data":domain,"source":"IBMXFORCE","score":score,'associated_url': None,"category":catDesc,"lastDate":datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')})
-
+							DB.project.update({"_id":i['_id']},{"$set": {"ibm_domain_results":score, 'ibm_domain_data':ibm}})
+							IBMCHECKED[domain] = [score,ibm]
+							DB.domains.insert({"data":domain,"source":"IBMXFORCE","ibm_domain_results":score,'ibm_domain_data':ibm,"lastDate":datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')})
 					else:
-						IBMCHECKED[domain] = [-1,'Url Not Found','Url Not Found']
-						DB.project.update({"_id":i['_id']},{'$push':{"ibm_domain_results":{'$each':[{'domain':domain,"score":-1, 'associated_url':'Url Not Found',"ibm_descriptions":'URL Not Found'}]}}})
-						DB.domains.insert({"data":domain,"source":"IBMXFORCE","score":-1,'associated_url': 'Url Not Found',"category":'Url Not Found',"lastDate":datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')})
+						IBMCHECKED[domain] = [-1,'Url Not Found']
+						DB.project.update({"_id":i['_id']},{"$set": {"ibm_domain_results":-1, 'ibm_domain_data':'None'}})
+						DB.domains.insert({"data":domain,"source":"IBMXFORCE","ibm_domain_results":-1,'ibm_domain_data':'None',"lastDate":datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')})
 
 			else:
-				DB.project.update({"_id":i['_id']},{'$push':{"ibm_domain_results":{'$each':[{'domain':domain,"score" : IBMCHECKED[domain][0], 'associated_url':IBMCHECKED[domain][1],"ibm_descriptions":IBMCHECKED[domain][2]}]}}})
+				DB.project.update({"_id":i['_id']},{'$set':{"ibm_domain_results":IBMCHECKED[domain][0], 'ibm_domain_data':IBMCHECKED[domain][1]}})
 
 
 
@@ -542,70 +531,43 @@ def virustotal(id):
 			md5s.append(t)
 	print '\033[32m[+]%s HASHES to check with Virustotal\033[0m' % len(md5s)
 	c = 0
-	md5CSV = ''
+	# md5CSV = ''
 	if len(md5s) > 0:
 		for i in md5s:
 			print i['md5']
 			if i['md5'] != None:
-				q = {"md5":i['md5'],"vt_results":{"$exists":True},"vt_scan_date":{"$exists":True}}
+				####check to see if hash has already been run against virustotal
+				q = {"md5":i['md5'],"vt_results":{"$exists":True},"vt_scan_date":{"$exists":True}, "vt_data":{"$exists":True}}
 				checkFirst = DB.hashes.find_one(q)
 				if checkFirst:
-					DB.project.update({"md5":checkFirst['md5']},{"$set":{"vt_results":checkFirst['vt_results'],"vt_scan_date":checkFirst['vt_scan_date']}},multi=True)
+					print 'hash found in DB'
+					DB.project.update({"md5":checkFirst['md5']},{"$set":{"vt_results":checkFirst['vt_results'],"vt_scan_date":checkFirst['vt_scan_date'], "vt_data":checkFirst['vt_data']}},multi=True)
 				else:
-					md5CSV += str(i['md5']) + ','
-					if c % 3 == 0 and c != 0:		
-						scan = vt.getReport(md5CSV)
-						if isinstance(scan,dict):
-							if scan['response_code'] != 0:
-									score = scan['positives']
-									if score == 0:
-										score = -1
-									DB.project.update({"md5":scan['resource']},{"$set":{"vt_results":score,"vt_scan_date":scan['scan_date']}},multi=True)
-									DB.hashes.update({"md5":scan['resource']},{"$set":{"vt_results":score,"vt_scan_date":scan['scan_date']}})				
-							else:
-								DB.project.update({"md5":scan['resource']},{"$set":{"vt_results":0, 'vt_scan_date':datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')}},multi=True)
-								DB.hashes.update({"md5":scan['resource']},{"$set":{"vt_results":0,'vt_scan_date':datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')}})
-						else:
-							for indv in range(0,len(scan)):
-								if scan[indv]['response_code'] != 0:
-									score = scan[indv]['positives']
-									if score == 0:
-										score = -1
-									DB.project.update({"md5":scan[indv]['resource']},{"$set":{"vt_results":score,"vt_scan_date":scan[indv]['scan_date']}},multi=True)
-									DB.hashes.update({"md5":scan[indv]['resource']},{"$set":{"vt_results":score,"vt_scan_date":scan[indv]['scan_date']}})							
-								else:
-									DB.project.update({"md5":scan[indv]['resource']},{"$set":{"vt_results":0, 'vt_scan_date':datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')}},multi=True)
-									DB.hashes.update({"md5":scan[indv]['resource']},{"$set":{"vt_results":0, 'vt_scan_date':datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')}})
-
-						time.sleep(15)
-						md5CSV = ''	
-						c = 0
-					c +=1
-				scan = vt.getReport(md5CSV)
-				if isinstance(scan,dict):
-					if scan['response_code'] != 0:
-						score = scan['positives']
-						if score == 0:
-							score = -1
-						DB.project.update({"md5":scan['resource']},{"$set":{"vt_results":score,"vt_scan_date":scan['scan_date']}},multi=True)
-						DB.hashes.update({"md5":scan['resource']},{"$set":{"vt_results":score,"vt_scan_date":scan['scan_date']}})				
-					else:
-						DB.project.update({"md5":scan['resource']},{"$set":{"vt_results":-1, 'vt_scan_date':datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')}},multi=True)
-						DB.hashes.update({"md5":scan['resource']},{"$set":{"vt_results":-1 ,'vt_scan_date':datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')}})
-
-				else:
-					for indv in range(0,len(scan)):
-						if scan[indv]['response_code'] != 0:
-							score = scan[indv]['positives']
+					scan = vt.getReport(i['md5'])
+					if isinstance(scan,dict):
+						if scan['response_code'] != 0:
+							score = scan['positives']
 							if score == 0:
 								score = -1
-							DB.project.update({"md5":scan[indv]['resource']},{"$set":{"vt_results":score,"vt_scan_date":scan[indv]['scan_date']}},multi=True)
-							DB.hashes.update({"md5":scan[indv]['resource']},{"$set":{"vt_results":score,"vt_scan_date":scan[indv]['scan_date']}})
+							DB.project.update({"md5":scan['resource']},{"$set":{"vt_results":score,"vt_scan_date":scan['scan_date'], "vt_data": scan}},multi=True)
+							DB.hashes.update({"md5":scan['resource']},{"$set":{"vt_results":score,"vt_scan_date":scan['scan_date'], "vt_data": scan}},upsert=True)				
 						else:
-							DB.project.update({"md5":scan[indv]['resource']},{"$set":{"vt_results":-1, 'vt_scan_date':datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')}},multi=True)
-							DB.hashes.update({"md5":scan[indv]['resource']},{"$set":{"vt_results":-1, 'vt_scan_date':datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')}},)
+							DB.project.update({"md5":scan['resource']},{"$set":{"vt_results":-1, 'vt_scan_date':datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d'), "vt_data": 'None'}},multi=True)
+							DB.hashes.update({"md5":scan['resource']},{"$set":{"vt_results":-1 ,'vt_scan_date':datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d'), "vt_data": 'None'}},upsert=True)
 
-			time.sleep(15)
+					else:
+						for indv in range(0,len(scan)):
+							if scan[indv]['response_code'] != 0:
+								score = scan[indv]['positives']
+								if score == 0:
+									score = -1
+								DB.project.update({"md5":scan[indv]['resource']},{"$set":{"vt_results":score,"vt_scan_date":scan[indv]['scan_date'], "vt_data": scan[indv]}},multi=True)
+								DB.hashes.update({"md5":scan[indv]['resource']},{"$set":{"vt_results":score,"vt_scan_date":scan[indv]['scan_date'], "vt_data": scan[indv]}},upsert=True)
+							else:
+								DB.project.update({"md5":scan[indv]['resource']},{"$set":{"vt_results":-1, 'vt_scan_date':datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d'), "vt_data": scan[indv]}},multi=True)
+								DB.hashes.update({"md5":scan[indv]['resource']},{"$set":{"vt_results":-1, 'vt_scan_date':datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d'), "vt_data": scan[indv]}},upsert=True)
+
+					time.sleep(15)
 	else:
 		print "NONE"
 			
@@ -622,16 +584,38 @@ def virusTotalMd5CheckUI(hash):
 		score = scan['positives']
 		if score == 0:
 			score = -1
-		DB.project.update({"md5":scan['resource']},{"$set":{"vt_results":score,"vt_scan_date":scan['scan_date']}},multi=True)
-		DB.hashes.update({"md5":scan['resource']},{"$set":{"vt_results":score,"vt_scan_date":scan['scan_date']}})
+		DB.project.update({"md5":scan['resource']},{"$set":{"vt_results":score,"vt_scan_date":scan['scan_date'], "vt_data": scan}},multi=True)
+		DB.hashes.update({"md5":scan['resource']},{"$set":{"vt_results":score,"vt_scan_date":scan['scan_date'], "vt_data": scan}},upsert=True)
 		if score >0:
 			DB.project.update({"md5":scan['resource']},{"$set":{"flagged":True}},multi=True)
 
 	else:
-		DB.project.update({"md5":scan['resource']},{"$set":{"vt_results":-1, 'vt_scan_date':datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')}},multi=True)
-		DB.hashes.update({"md5":scan['resource']},{"$set":{"vt_results":-1,'vt_scan_date':datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')}})
+		DB.project.update({"md5":scan['resource']},{"$set":{"vt_results":-1, 'vt_scan_date':datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d'), "vt_data": scan}},multi=True)
+		DB.hashes.update({"md5":scan['resource']},{"$set":{"vt_results":-1,'vt_scan_date':datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d'), "vt_data": scan}},upsert=True)
 
+def metascanMd5Check(md5):
+	mt.parseReport(mt.getReport(md5),md5)
 
+def metascan(id):
+	##find all md5s that were flagged by initial analysis
+	allmd5s = DB.project.find({'md5':{'$exists':True},"osxcollector_incident_id":id, 'flagged':True },{"md5":1})
+	md5s = []
+	###all md5s in a list
+	for t in allmd5s:
+		if t not in md5s:
+			md5s.append(t)
+
+	##iterate over md5s and run against metascan
+	for x in md5s:
+		print '\033[32m %s \033[0m' % x['md5']
+		##check to see if it has already been sent to metascan, if not send to metascan
+		q = {"md5":x['md5'],"mt_results":{"$exists":True},"mt_data":{"$exists":True}}
+		checkFirst = DB.hashes.find_one(q)
+		if checkFirst:
+			DB.project.update({"md5":checkFirst['md5']},{"$set":{"mt_results":checkFirst['mt_results'],"mt_data":checkFirst['mt_data']}},multi=True)
+		else:
+			mt.parseReport(mt.getReport(x['md5']),x['md5'])
+			time.sleep(2.4)
 
 def virusTotalDomainCheckUI(url):
 	# I am gonig to come back to this at some point.
@@ -644,7 +628,7 @@ def ibmXforceMd5CheckUI(hash):
 	#if the hash is already in our collection of hashes and has an ibm_rating already
 	if malware:
 		if "ibm_rating" in malware.keys():
-			DB.project.update({"md5":hash},{"$set":{"ibm_md5_results":malware['ibm_rating'], "Malware_Family":malware['ibm_family']}},multi=True)
+			DB.project.update({"md5":hash},{"$set":{"ibm_md5_results":malware['ibm_rating'], "ibm_malware_family":malware['ibm_family'], "ibm_risk": malware['ibm_risk']}},multi=True)
 			return
 		## if the hash doesn't have an ibm_rating or isn't in our hash collection, we make an api call to xforce
 	rslts = xforceMod.xfe_malware_check(TOKEN,hash)
@@ -653,38 +637,104 @@ def ibmXforceMd5CheckUI(hash):
 		family = rslts['malware']['origins']['external']['family']
 		if rating ==0:
 			rating == -1
-		DB.hashes.update({'md5':hash},{"$set":{'ibm_rating':rating, "ibm_family": family}},upsert=True)
-		DB.project.update({"md5":hash},{"$set":{"ibm_md5_results":rating, "Malware_Family":family}},multi=True)
+		DB.hashes.update({'md5':hash},{"$set":{'ibm_rating':rating, "ibm_family": family, "ibm_risk": rslts['malware']['risk']}},upsert=True)
+		DB.project.update({"md5":hash},{"$set":{"ibm_md5_results":rating, "ibm_malware_family":family, "ibm_risk": rslts['malware']['risk']}},multi=True)
 	else:
-		DB.project.update({"md5":hash},{"$set":{"ibm_md5_results":-1, "Malware_Family":'None'}},multi=True)
-		DB.hashes.update({'md5':hash},{"$set":{'ibm_rating': -1, "ibm_family":'None'}},upsert=True)
+		DB.project.update({"md5":hash},{"$set":{"ibm_md5_results":-1, "ibm_malware_family":'None', "ibm_risk": 'None'}},multi=True)
+		DB.hashes.update({'md5':hash},{"$set":{'ibm_rating': -1, "ibm_family":'None', "ibm_risk": 'None'}},upsert=True)
 
 def ibmXforceDomainCheckUI(url,id):
 	p = {"_id":ObjectId(id)}
 
 	domain = url.replace('www.','')
 	q = {"data": {"$regex": domain},'source':'IBMXFORCE'}
-	malware = DB.domains.find_one(q)
-	if malware:
-		DB.project.update(p,{'$push':{"ibm_domain_results":{"$each":[{'domain':domain, 'score':malware['score'], 'associated_url':malware['associated_url'],"ibm_descriptions":malware['category']}]}}})
+	domainLookup = DB.domains.find_one(q)
+	if domainLookup:
+		DB.project.update(p,{"$set": {"ibm_domain_results":domainLookup['ibm_domain_results'], 'ibm_domain_data':domainLookup['ibm_domain_data']}})
 	else:
 		ibm = xforceMod.xfe_url_check(TOKEN,domain)
 		if 'error' not in ibm.keys():
 			score = float(ibm['result']['score'])
-			catDesc = ''
-			for key,values in ibm['result']['categoryDescriptions'].iteritems():
-				catDesc += key + " ==> " + ibm['result']['categoryDescriptions'][key]
-			if 'associated' in ibm.keys():
-				if float(ibm['associated'][0]['score']) > score:
-					score = float(ibm['associated'][0]['score'])
-				DB.project.update(p,{'$push':{"ibm_domain_results":{"$each":[{'domain':domain, 'score':score, 'associated_url':ibm['associated'][0]['url'],"ibm_descriptions":catDesc}]}}})
-				DB.domains.insert({"data":domain,"source":"IBMXFORCE","score":score,'associated_url': ibm['associated'][0]['url'],"category":catDesc,"lastDate":datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')})
-			else:
-				DB.project.update(p,{'$push':{"ibm_domain_results":{"$each":[{'domain':domain, 'score':score, 'associated_url':None,"ibm_descriptions":catDesc}]}}})
-				DB.domains.insert({"data":domain,"source":"IBMXFORCE","score":score,'associated_url': None,"category":catDesc,"lastDate":datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')})
+			DB.project.update(p,{"$set": {"ibm_domain_results":score, 'ibm_domain_data':ibm}})
+			DB.domains.insert({"data":domain,"source":"IBMXFORCE","ibm_domain_results":score,'ibm_domain_data':ibm,"lastDate":datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')})
 		else:
-			DB.project.update(p,{'$push':{"ibm_domain_results":{"$each":[{'domain':domain, 'score':-1, 'associated_url':'Url Not Found',"ibm_descriptions":'Url Not Found'}]}}})
-			DB.domains.insert({"data":domain,"source":"IBMXFORCE","score":-1,'associated_url': 'Url Not Found',"category":'Url Not Found',"lastDate":datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')})	
+			DB.project.update(p,{"$set": {"ibm_domain_results":-1, 'ibm_domain_data':'None'}})
+			DB.domains.insert({"data":domain,"source":"IBMXFORCE","ibm_domain_results":-1,'ibm_domain_data':'None',"lastDate":datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')})
+
+def sendHashIBM(hash):
+	""" This is for updating hashes using IBM XFORCE api 
+	We aren't implementing it as of now but its here Jan 2016"""
+	rslts = xforceMod.xfe_malware_check(TOKEN,hash)
+	if 'error' not in rslts.keys():
+		rating = rslts['malware']['origins']['external']['detectionCoverage']
+		family = rslts['malware']['origins']['external']['family']
+		if rating ==0:
+			rating == -1
+		DB.hashes.update({'md5':hash},{"$set":{'ibm_rating':rating, "ibm_family": family}},upsert=True)
+		DB.project.update({"md5":hash},{"$set":{"ibm_md5_results":rating, "ibm_malware_family":family}},multi=True)
+	else:
+		DB.project.update({"md5":hash},{"$set":{"ibm_md5_results":-1, "ibm_malware_family":'None'}},multi=True)
+		DB.hashes.update({'md5':hash},{"$set":{'ibm_rating': -1, "ibm_family":'None'}},upsert=True)
+
+
+
+def updateHashes():
+	""" This is for updating hashes using IBM XFORCE api 
+	We aren't implementing it as of now but its here Jan 2016"""
+	cur = DB.hashes.find({},{'md5':1}).limit(10000)
+	for i in range(0,cur.count(with_limit_and_skip=True)):
+		if i % 15 == 0:
+			print i
+			x  = threading.Thread( target=sendHashIBM,   args=(cur[i]['md5'],))			
+			x1 = threading.Thread( target=sendHashIBM,   args=(cur[i+1]['md5'],))
+			x2 = threading.Thread( target=sendHashIBM,   args=(cur[i+2]['md5'],))
+			x3 = threading.Thread( target=sendHashIBM,   args=(cur[i+3]['md5'],))
+			x4 = threading.Thread( target=sendHashIBM,   args=(cur[i+4]['md5'],))
+			x5 = threading.Thread( target=sendHashIBM,   args=(cur[i+5]['md5'],))
+			x6 = threading.Thread( target=sendHashIBM,   args=(cur[i+6]['md5'],))
+			x7 = threading.Thread( target=sendHashIBM,   args=(cur[i+7]['md5'],))
+			x8 = threading.Thread( target=sendHashIBM,   args=(cur[i+8]['md5'],))
+			x9 = threading.Thread( target=sendHashIBM,   args=(cur[i+9]['md5'],))
+			x10 = threading.Thread( target=sendHashIBM,   args=(cur[i+10]['md5'],))
+			x11 = threading.Thread( target=sendHashIBM,   args=(cur[i+11]['md5'],))
+			x12 = threading.Thread( target=sendHashIBM,   args=(cur[i+12]['md5'],))
+			x13 = threading.Thread( target=sendHashIBM,   args=(cur[i+13]['md5'],))
+			x14 = threading.Thread( target=sendHashIBM,   args=(cur[i+14]['md5'],))
+			
+			x.start()
+			x1.start()
+			x2.start()
+			x3.start()
+			x4.start()
+			x5.start()
+			x6.start()
+			x7.start()
+			x8.start()
+			x9.start()
+			x10.start()
+			x11.start()
+			x12.start()
+			x13.start()
+			x14.start()
+
+			x.join()
+			x1.join()
+			x2.join()
+			x3.join()
+			x4.join()
+			x5.join()
+			x6.join()
+			x7.join()
+			x8.join()
+			x9.join()
+			x10.join()
+			x11.join()
+			x12.join()
+			x13.join()
+			x14.join()
+
+
+	return 'Finshed Updates to Hashes Colection'
 
 def flag(cursor):
 	for i in cursor:
@@ -761,11 +811,19 @@ def main():
 		else:
 			virusTotalDomainCheckUI(sys.argv[3])
 		getThemCounts()
+	elif sys.argv[1] == '--metascan':
+		if sys.argv[2] == '--hash':
+			metascanMd5Check(sys.argv[3])
+		getThemCounts()
 	elif sys.argv[1] == '--ibmXforce':
 		if sys.argv[2] == '--hash':
 			ibmXforceMd5CheckUI(sys.argv[3])
 		else:
 			ibmXforceDomainCheckUI(sys.argv[3],sys.argv[4])
+		getThemCounts()
+	elif sys.argv[1] == '--update':
+		print 'Updating'
+		updateHashes()
 		getThemCounts()
 	elif sys.argv[1] == '-a':
 		id = importProject(sys.argv[2])
@@ -773,9 +831,11 @@ def main():
 		print "FINISHED IMPORT STARTING ANALYSIS... %s" % id
 		analyze(id)
 		flagging(id)
-		print "Starting VirusTotal...."
+		print "\033[32m[+] Starting Metascan Analysis....\033[0m"
+		metascan(id)
+		print "\033[32m[+] Starting VirusTotal Analysis....\033[0m"
 		virustotal(id)
-		print 'FINISHED IMPORT and ANALYSIS'
+		print '\033[34m[*] FINISHED IMPORT and ANALYSIS\033[0m'
 		DB.project.update({'xattr-wherefrom' :{'$exists':1}},{'$rename':{'xattr-wherefrom':'xattrwherefrom'}},multi=True)
 		getThemCounts()
 	elif sys.argv[1] == '-u':

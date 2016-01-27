@@ -1,12 +1,4 @@
 
-// Session.setDefault('next',true)
-// Session.setDefault('skipcursor',0)
-
-// Session.set("query",'::accounts::downloads::startup::mail::quarantines::firefox::applications::safari::kext::chrome')
-
-// Session.setDefault('showResults',25)
-
-// Session.setDefault('checked',0)
 
 Template.sectionFlagged.helpers({
 	
@@ -91,17 +83,27 @@ Template.sectionFlagged.helpers({
 	  var index = 0
 	  var doc = this
 	 _(doc).each( function( value, key, doc) {
-	 	if(key == 'ibm_domain_results'){
-	 		newval=''
-	 			for (var i = 0; i < value.length; i++) {
-	 				newval += "{ DOMAIN: " + value[i]['domain'] + " RATING: " + value[i]['score'] + ' DESCRIPTION: ' + value[i]['ibm_descriptions'] + ' ASSOCIATED URL: ' + value[i]['associated_url'] + '} '
-	 			};
-
-	 		list[index] = {};
-	        list[index]['value'] = newval;
-	        list[index]['key'] = key;
-	    }
-	    	else if(key != '_id' && key != 'osxcollector_incident_id' && key != 'flagged'){
+	 	if(key != '_id' && 
+	 			key != 'osxcollector_incident_id' && 
+	 			key != 'flagged' && 
+	 			key != 'osxcollector_section' &&
+	 			key != 'BlackList_Domain' && 
+	 			key != 'Black_List_Source' &&
+	 			key != 'black_list' &&
+	 			key != 'ibm_domain_results' &&
+	 			key != 'ibm_domain_data' &&
+	 			key != 'ibm_malware_family' &&
+	 			key != 'ibm_md5_results' &&
+	 			key != 'ibm_risk' &&
+	 			key != 'shadow_url' &&
+	 			key != 'shadow_data' &&
+	 			key != 'shadow_results' &&
+	 			key != 'vt_results' &&
+	 			key != 'vt_data' &&
+	 			key != 'mt_data' &&
+	 			key != 'mt_results' &&
+	 			key != 'vt_scan_date' 
+	 			){
 	        list[index] = {};
 	        list[index]['value'] = value;
 	        list[index]['key'] = key;
@@ -155,9 +157,6 @@ Template.sectionFlagged.helpers({
 		}
 		if(ibm_md5 === undefined){
 			ibm_md5 = 0
-		}
-		if(typeof(ibm_domain) === 'object'){
-			ibm_domain = ibm_domain[0].score
 		}
 		score = bl + vt + ibm_domain+ sh + ibm_md5
 		if (score > 0)

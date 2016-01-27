@@ -131,6 +131,7 @@
 <!-- 							<a class="waves-effect waves-light btn "><i class="fa fa-send"></i> OpenDNS</a>
  -->							<a class="waves-effect waves-light btn shadow"><i class="fa fa-send"></i> Shadow Server</a>
 							<a class="waves-effect waves-light btn blacklist"><i class="fa fa-send"></i> Blacklist</a>
+							<a class="waves-effect waves-light btn metascan"><i class="fa fa-send"></i> Metascan</a>
   			</div>    	</div>
 	</div>
 </div>
@@ -201,5 +202,251 @@
 		</div>
 	</div>
 </div>
+
+
+<div id="thirdPartyModal" class="modal">
+	<div class="modal-content">
+		<div class="row">
+			<div class='col s12' >
+			{{#if found}}
+				{{#if whichToShow 'metascan'}}
+						<h3 >{{score}}<span class="thin" style="font-size:0.5em"> Metascan</span></h3>
+						<ul class="collection">
+							{{#if data.md5}}<li class="collection-item"><div><span class="label label-default text-uppercase">MD5</span><span> {{data.md5}}</span></div></li>{{/if}}
+							{{#if data.upload_timestamp}}<li class="collection-item"><div><span class="label label-default text-uppercase">First Uploaded</span><span> {{data.upload_timestamp}}</span></div></li>{{/if}}
+							{{#if data.file_type_description}}<li class="collection-item"><div><span class="label label-default text-uppercase">Filetype</span><span> {{data.file_type_description}}</span></div></li>{{/if}}
+							{{#if data.file_type_extension}}<li class="collection-item"><div><span class="label label-default text-uppercase">File Ext</span><span> {{data.file_type_extension}}</span></div></li>{{/if}}
+							{{#if data.file_size}}<li class="collection-item"><div><span class="label label-default text-uppercase">File Size</span><span> {{data.file_size}} KB</span></div></li>{{/if}}
+						</ul>
+						<div class="panel panel-default"> 
+					<div class="panel-heading" role="tab" id="heading2">
+			 			<div class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion" href="#collapseDetails" aria-expanded="true" aria-controls="collapseDetails">Scanner Details</a>
+						</div>
+					</div>
+					<div id="collapseDetails" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2">
+						<div class="panel-body">
+							<table class="centered striped">
+								<thead>
+									<tr>
+										<th data-field='scanner'> Scanner</th>
+										<th data-field='threat_found'>Threat Found</th>
+										<th data-field='def_time'>Last Updated</th>
+
+									</tr>
+								</thead>	
+								<tbody>
+
+					{{#each details}}
+					<tr>
+						<td>{{this.scanner}}</td>
+						<td>{{#if this.scan_result_i}}{{this.threat_found}} {{else}}<i class="fa fa-check" style="color:#66bb6a"></i>{{/if}}</td>
+						<td>{{this.def_time}}</td>
+					</tr>
+		        	{{/each}}
+		        				</tbody>
+							</table>
+					
+						</div>
+					</div>
+				</div>
+			{{/if}}
+			{{#if whichToShow 'virustotal'}}
+						<h3 >{{score}}<span class="thin" style="font-size:0.5em"> VirusTotal</span></h3>
+						<ul class="collection">
+							<li class="collection-item"><div><span class="label label-default text-uppercase">MD5</span><span> {{data.md5}}</span></div></li>
+							<li class="collection-item"><div><span class="label label-default text-uppercase">Scan Date</span><span> {{data.scan_date}}</span></div></li>
+							<li class="collection-item"><div><span class="label label-default text-uppercase">Link to VirusTotal</span><span><a href='{{data.link}}' target='_blank' > {{shorten data.link}}</a></span></div></li>
+						</ul>
+						<div class="panel panel-default"> 
+					<div class="panel-heading" role="tab" id="heading2">
+			 			<div class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion" href="#collapseDetails" aria-expanded="true" aria-controls="collapseDetails">Scanner Details</a>
+						</div>
+					</div>
+					<div id="collapseDetails" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2">
+						<div class="panel-body">
+							<table class="centered striped">
+								<thead>
+									<tr>
+										<th data-field='scanner'> Scanner</th>
+										<th data-field='threat_found'>Threat Found</th>
+										<th data-field='def_time'>Last Updated</th>
+
+									</tr>
+								</thead>	
+								<tbody>
+
+					{{#each details}}
+					<tr>
+						<td>{{this.scanner}}</td>
+						<td>{{#if this.detected}}{{this.result}} {{else}}<i class="fa fa-check" style="color:#66bb6a"></i>{{/if}}</td>
+						<td>{{this.update}}</td>
+					</tr>
+		        	{{/each}}
+		        				</tbody>
+							</table>
+					
+						</div>
+					</div>
+				</div>
+			{{/if}}
+			{{#if whichToShow 'xforceMD5'}}
+						<h3 >{{score}}/100<span class="thin" style="font-size:0.5em"> IBM X-Force Threat Exchange</span></h3>
+						<ul class="collection">
+							<li class="collection-item"><div><span class="label label-default text-uppercase">MD5</span><span> {{data.md5}}</span></div></li>
+							<li class="collection-item"><div><span class="label label-default text-uppercase">Family</span><span>{{data.family}}</span></div></li>
+							<li class="collection-item"><div><span class="label label-default text-uppercase">Risk</span><span><a href='{{data.link}}' target='_blank' > {{data.risk}}</a></span></div></li>
+						</ul>
+			{{/if}}
+			{{#if whichToShow 'xforceUrl'}}
+						<h3 >{{score}}/9<span class="thin" style="font-size:0.5em"> IBM X-Force Threat Exchange</span></h3>
+						<ul class="collection">
+							<li class="collection-item"><div><span class="label label-default text-uppercase">URL</span><span> {{data.url}}</span></div></li>
+						</ul>
+
+						<div class="panel panel-default"> 
+
+        					<div class="panel-heading" role="tab" id="heading5">
+			 			<div class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion" href="#collapseCATS" aria-expanded="true" aria-controls="collapseCATS">Categories</a>
+						</div>
+					</div>
+					<div id="collapseCATS" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading5">
+						<div class="panel-body">
+        					<ul class="collection">							        
+
+        					{{#each iterXforceURL details.categoryDescriptions}}
+        						<li class="collection-item"><div><span class="label label-default text-uppercase">{{key}}</span><span> {{value}}</span></div></li>
+        					{{/each}}
+        					{{#each iterXforceURL details.cats}}
+        						<li class="collection-item"><div><span class="label label-default text-uppercase">{{key}}</span><span> {{value}}</span></div></li>
+        					{{/each}}
+        					</ul>
+        				</div>
+        			</div>
+				</div>	
+
+<!--APPLICATION SECTION -->
+
+{{#if details.application}}		
+
+			<div class="panel panel-default">
+								<div class="panel-heading" role="tab" id="heading2">
+			 			<div class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion" href="#collapseDetails" aria-expanded="true" aria-controls="collapseDetails">Application</a>
+						</div>
+					</div>
+					<div id="collapseDetails" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2">
+						<div class="panel-body">
+						<ul class="collection">
+
+							<!-- {{#each iterXforceURL details.application}}
+									 <li class="collection-item"><div><span class="label label-default text-uppercase">{{key}}</span><span>  {{value}}</span></div></li>
+        					{{/each}} -->
+        					<li class="collection-item"><div><span class="label label-default text-uppercase">Canonical Name</span><span> {{details.application.canonicalName}}</span></div></li>
+							<li class="collection-item"><div><span class="label label-default text-uppercase">Name</span><span> {{details.application.name}}</span></div></li>
+							<li class="collection-item"><div><span class="label label-default text-uppercase">Base URL</span><span> {{details.application.baseurl}}</span></div></li>
+							<li class="collection-item"><div><span class="label label-default text-uppercase">Desciption</span><span> {{details.application.description}}</span></div></li>
+
+							{{#each iterXforceURL details.application.actionDescriptions}}
+									 <li class="collection-item"><div><span class="label label-default text-uppercase">{{key}}</span><span>  {{value}}</span></div></li>
+        					{{/each}}
+        					{{#each iterXforceURL details.application.actions}}
+									 <li class="collection-item"><div><span class="label label-default text-uppercase">{{key}}</span><span>  {{value}}</span></div></li>
+        					{{/each}}    	
+        					{{#each iterXforceURL details.application.categories}}
+									 <li class="collection-item"><div><span class="label label-default text-uppercase">{{key}}</span><span>  {{value}}</span></div></li>
+        					{{/each}} 
+        					{{#each iterXforceURL details.application.categoryDescriptions}}
+									 <li class="collection-item"><div><span class="label label-default text-uppercase">{{key}}</span><span>  {{value}}</span></div></li>
+        					{{/each}} 
+						</ul>
+
+						</div>
+					</div>
+				</div>
+
+				<!--RISK FACTORS SECTION -->
+												<div class="panel panel-default"> 
+
+        					<div class="panel-heading" role="tab" id="heading3">
+			 			<div class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion" href="#collapseiskFactors" aria-expanded="true" aria-controls="collapseiskFactors">RiskFactors</a>
+						</div>
+					</div>
+					<div id="collapseiskFactors" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading3">
+						<div class="panel-body">
+        					<ul class="collection">							        
+
+        					{{#each iterXforceURL details.application.riskfactors}}
+        						<li class="collection-item"><h5><span class="label label-riskfactors text-uppercase">{{key}}</span></h5></li>
+        						<li class="collection-item"> 
+        						{{#each iterXforceURL value}}
+									<div><span class="label label-default text-uppercase">{{key}}</span><span>  {{value}}</span></div><p></p>
+								{{/each}}
+								</li>
+        					{{/each}}
+        					</ul>
+        				</div>
+        			</div>
+				</div>
+<!--URLS SECTION -->
+					<div class="panel panel-default"> 
+
+        					<div class="panel-heading" role="tab" id="heading4">
+			 			<div class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion" href="#collapseURLS" aria-expanded="true" aria-controls="collapseURLS">Urls</a>
+						</div>
+					</div>
+					<div id="collapseURLS" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading4">
+						<div class="panel-body">
+        					<ul class="collection">							        
+        					{{#each iterXforceURL details.application.urls}}
+									 <li class="collection-item"><div><span class="label label-default text-uppercase"></span><span>  {{value}}</span></div></li>
+        					{{/each}}
+        					</ul>
+        				</div>
+        			</div>
+				</div>
+{{/if}}			
+						<!-- 	<li class="collection-item"><div><span class="label label-default text-uppercase">Family</span><span><a href='{{data.link}}' target='_blank' > {{data.family}}</a></span></div></li>
+							<li class="collection-item"><div><span class="label label-default text-uppercase">Risk</span><span><a href='{{data.link}}' target='_blank' > {{data.risk}}</a></span></div></li> -->
+							
+
+						
+			{{/if}}
+			{{#if whichToShow 'shadow'}}
+						<h3 >{{score}}<span class="thin" style="font-size:0.5em">Shadow Server</span></h3>
+						<ul class="collection">
+							
+							<li class="collection-item"><div><span class="label label-default text-uppercase">Link</span><span><a href='{{data.link}}' target='_blank' > {{shorten data.link}}</a></span></div></li>
+							{{#each iterShadow}}
+									 <li class="collection-item"><div><span class="label label-default text-uppercase">{{key}}</span><span>  {{value}}</span></div></li>
+        					{{/each}}
+						</ul>
+			{{/if}}
+			{{#if whichToShow 'blacklist'}}
+						<h3 >{{score}}<span class="thin" style="font-size:0.5em">BlackListed Domains</span></h3>
+						<ul class="collection">
+							
+							<li class="collection-item"><div><span class="label label-default text-uppercase">Black Listed Domain</span><span> {{data.url}}</span></div></li>
+							<li class="collection-item"><div><span class="label label-default text-uppercase">Black List Source</span><span> {{data.source}}</span></div></li>
+						</ul>
+			{{/if}}
+			{{else}}
+				<h3>{{data.md5}}<span class="thin" style="font-size:0.5em"> Not Found</span></h3>
+			{{/if}}	
+				
+			</div>	
+				 
+		</div>
+		<div class="modal-footer">
+			<a class="waves-effect waves-red btn-large close">Close</a>
+    	</div>
+	</div>
+</div>
+
+
 {{/if}}
 </template>

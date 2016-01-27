@@ -41,11 +41,10 @@ Template.sectionApplications.helpers({
 		} 
 		else if (rslts == 1){
 			return 'label-warning'
-		}else if (rslts >1){
+		}else if (rslts == 2){
 			return 'label-danger'
 		}else
 		{ return 'label-default'}
-	
 	},
 	checkResultsLabelsShadow : function (rslts) {
 		if (rslts == -1){

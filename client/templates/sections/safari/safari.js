@@ -30,15 +30,15 @@ Template.sectionSafari.helpers({
 	 	return Session.get('next')
 	 },
 	checkResultsLabels : function (rslts) {
-		if (rslts == 2){
+		if (rslts == -1){
 			return 'label-success'
 		}
-		else if(rslts == 1){
+		else if(rslts == 0){
 			return 'label-info'
 		} 
-		else if (rslts == -1){
+		else if (rslts == 1){
 			return 'label-warning'
-		}else if (rslts == -2){
+		}else if (rslts == 2){
 			return 'label-danger'
 		}else
 		{ return 'label-default'}
@@ -56,9 +56,7 @@ Template.sectionSafari.helpers({
 		{ return 'label-default'}
 	},
 	checkResultsLabelsIBM : function (rslts) {
-		if(typeof(rslts)==='object'){
-			rslts = rslts[0].score
-		}
+		
 		if (rslts == -1){
 			return 'label-info'
 		}
@@ -72,6 +70,9 @@ Template.sectionSafari.helpers({
 		}else
 		{ return 'label-default'}
 	},
+	countChecked: function (){
+		return Session.get('checked')
+	},
 	findname : function (file_path) {
 	var x = file_path.lastIndexOf('/') + 1
 		return file_path.substring(x)
@@ -81,17 +82,28 @@ Template.sectionSafari.helpers({
 	  var index = 0
 	  var doc = this
 	 _(doc).each( function( value, key, doc) {
-	 	if(key == 'ibm_domain_results'){
-	 		newval=''
-	 			for (var i = 0; i < value.length; i++) {
-	 				newval += "{ DOMAIN: " + value[i]['domain'] + " RATING: " + value[i]['score'] + ' DESCRIPTION: ' + value[i]['ibm_descriptions'] + ' ASSOCIATED URL: ' + value[i]['associated_url'] + '} '
-	 			};
-
-	 		list[index] = {};
-	        list[index]['value'] = newval;
-	        list[index]['key'] = key;
-	    }
-	    	else if(key != '_id' && key != 'osxcollector_incident_id' && key != 'flagged'){
+	 	
+	 		if(key != '_id' && 
+	 			key != 'osxcollector_incident_id' && 
+	 			key != 'flagged' && 
+	 			key != 'osxcollector_section' &&
+	 			key != 'BlackList_Domain' && 
+	 			key != 'Black_List_Source' &&
+	 			key != 'black_list' &&
+	 			key != 'ibm_domain_results' &&
+	 			key != 'ibm_domain_data' &&
+	 			key != 'ibm_malware_family' &&
+	 			key != 'ibm_md5_results' &&
+	 			key != 'ibm_risk' &&
+	 			key != 'shadow_url' &&
+	 			key != 'shadow_data' &&
+	 			key != 'shadow_results' &&
+	 			key != 'vt_results' &&
+	 			key != 'vt_data' &&
+	 			key != 'mt_data' &&
+	 			key != 'mt_results' &&
+	 			key != 'vt_scan_date' 
+	 			){
 	        list[index] = {};
 	        list[index]['value'] = value;
 	        list[index]['key'] = key;
@@ -114,7 +126,7 @@ Template.sectionSafari.helpers({
 		if(ibm === undefined){
 			ibm = 0
 		}
-		score = bl + vt + ibm[0].score
+		score = bl + vt + ibm
 		if (score > 0)
 			{return '#ef5350'}
 		else

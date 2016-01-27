@@ -529,3 +529,12 @@ padding:15px;
 .fa-trash{
   cursor:pointer;
 }
+
+
+.third-party-results{
+  cursor:pointer;
+}
+
+.label-riskfactors {
+    background-color: #2979ff;
+}
