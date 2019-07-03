@@ -1,4 +1,5 @@
 # osxstrata
+* This project is not being actively maintined and will probably stay that way, as we have all moved on from the company that we built this for * 
 OS X Strata builds upon Yelps OSXCollector(http://yelp.github.io/osxcollector/), providing a user interface to analyze data collected from a potentially compromised system.
 
 Currently there are two ways that you can run OSXStrata. 
